@@ -1,0 +1,20 @@
+{
+  "raw_sentence_counts": {
+    "train": 1428,
+    "dev": 200,
+    "test": 407
+  },
+  "processed_sentence_counts": {
+    "train": 1420,
+    "dev": 200,
+    "test": 403
+  },
+  "duplicates_removed_within_split": {
+    "train": 8,
+    "dev": 0,
+    "test": 4
+  },
+  "cross_split_train_test_overlap_kept_in_test": 1,
+  "bio_issues_found": 3,
+  "bio_issues_autofixed": 3
+}
