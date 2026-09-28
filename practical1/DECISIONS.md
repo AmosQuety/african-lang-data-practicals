@@ -75,4 +75,96 @@ Entries are written as decisions are made, in order.
 - **Risk:** None identified.
 - **Confidence:** High.
 
-(Further entries added during Stage 2/3/4 as profiling and preprocessing decisions are made.)
+---
+
+## D5: Unicode normalisation and control/invisible characters — skipped
+
+- **Decision:** Skip Unicode NFC normalisation and invisible/control-character stripping as an
+  active preprocessing step.
+- **Evidence:** `profile_before.json`/`.md` (Stage 2) report `unicode_issue_sentence_count: 0`
+  for all three splits (train, dev, test) — no non-NFC strings, zero-width/invisible characters,
+  control characters, unusual whitespace, or curly quotes were found anywhere in the raw data.
+- **Alternatives considered:** Running NFC normalisation unconditionally "just in case." Rejected
+  per the task's own rule ("Only apply a step if Stage 2 showed it is needed") — applying a no-op
+  transform for the sake of it is exactly what the instructions say not to do, and it would still
+  need to appear as a "changed" step in changes.csv (with zero actual changes), which is noise.
+- **Risk:** If some other Luganda MasakhaNER copy or downstream tool has different Unicode
+  handling, this dataset copy simply doesn't need it — the risk is low since this was checked
+  exhaustively, not assumed.
+- **Confidence:** High — this is a directly observed absence, not a guess.
+
+## D6: Whitespace/quote normalisation — skipped
+
+- **Decision:** Skip whitespace and quote/punctuation normalisation.
+- **Evidence:** Same profiling pass found no unusual whitespace characters (tabs, no-break
+  spaces, etc.) and no curly/smart quotes in any split (see D5 evidence — same check covers both).
+- **Alternatives considered:** None applied, for the same reason as D5.
+- **Risk:** None identified from the data itself.
+- **Confidence:** High.
+
+## D7: Exact-duplicate sentence removal — apply, but only within-split; test/train overlap flagged not deleted
+
+- **Decision:** Remove exact-duplicate sentences within each split (keep first occurrence only).
+  Do NOT delete the train/test overlap sentence; instead report it explicitly.
+- **Evidence:** `profile_before.json` found: train has 8 duplicate groups (8 extra instances),
+  test has 4 duplicate groups (4 extra instances), dev has 0. Additionally there is exactly 1
+  sentence that appears in BOTH train and test (the "Ye omubaka we Buvuma..." sentence, full text
+  in `profile_before.json` under `cross_split_exact_duplicates`).
+- **Alternatives considered:** (a) Do nothing about duplicates — rejected because within-split
+  exact duplicates inflate frequency counts and give a model repeated identical training signal
+  for no benefit. (b) Silently delete the train/test overlapping sentence from test — rejected
+  per the task's explicit instruction: "report any test sentences that also appear in train
+  instead of silently deleting them from test." Silent deletion would also change the test set
+  size in a way future readers of this repo wouldn't know about without diffing files.
+- **Risk:** Keeping the train/test overlap sentence in test means test-set metrics computed
+  downstream will include one sentence the model may have memorised verbatim from train — a
+  (very small, n=1) train/test leakage risk. Given it's a single sentence out of 407 test
+  sentences, the effect on aggregate metrics is expected to be negligible, but it is a real,
+  disclosed limitation.
+- **Confidence:** High on the mechanics (what was found, what was removed). Medium on whether
+  leaving the leak sentence in test is the "best" choice for someone about to train a model with
+  this data vs. removing it — the assignment's instruction is followed here rather than an
+  independent ML-methodology judgement call.
+
+## D8: BIO issues — auto-fix only the unambiguous leading-I- case, flag nothing else for auto-repair
+
+- **Decision:** Auto-fix only sentences where an `I-<TYPE>` tag appears at position 0 of the
+  sentence (i.e., with no preceding token at all) — convert it to `B-<TYPE>`. All three BIO issues
+  found in Stage 2 profiling are exactly this pattern. No other BIO error types were found, so no
+  other auto-fix rule was needed.
+- **Evidence:** All 3 invalid-BIO sentences reported in `profile_before.json` (train lines 6309,
+  17415, 25539) have the identical issue shape: `'I-<TYPE>' follows 'O' (I- tag with no preceding
+  B-/I- of same type)` at `index: 0` — the very first tag of the sentence. dev and test had zero
+  BIO issues.
+- **Alternatives considered:** Auto-fixing any `I-` tag that follows `O` regardless of position
+  (not just position 0) — rejected as NOT unambiguous: an `I-PER` following `O` mid-sentence could
+  indicate an annotation error where a `B-PER` was intended, OR it could indicate a missing token
+  boundary, OR (in principle) an annotator inconsistency about entity continuation across a
+  conjunction — the correct fix is not obvious from the tag sequence alone. The task explicitly
+  says "do NOT silently repair" ambiguous cases and only auto-fix "unambiguous cases like a
+  leading I- tag that should be B-" — which is precisely and only the case found here.
+- **Risk:** If any of these 3 sentences' leading I- tag was actually meant to signal "this
+  continues an entity from a previous (truncated) sentence" rather than a plain annotation slip,
+  the auto-fix would be wrong. Given these are standalone sentences (not a continued document
+  stream) and the CoNLL format used here doesn't carry cross-sentence entity continuation, this
+  risk is considered low but is disclosed. All 3 affected sentences are logged before/after in
+  `changes.csv` and also in `bio_issues.csv` for manual review.
+- **Confidence:** High that the fix rule matches the task's stated "unambiguous" bar. Medium-high
+  confidence the fix is linguistically correct, since I cannot verify original annotator intent.
+
+## D9: Reformatting to JSONL — field choices
+
+- **Decision:** Each output line: `{"id": "<split>-<index>", "split": "<split>", "tokens": [...],
+  "ner_tags": [...]}`. `id` is a newly assigned stable index per split (0-based), not taken from
+  the source (the raw CoNLL files carry no sentence IDs).
+- **Evidence:** Raw files have no sentence-ID column — confirmed by inspecting the 2-column
+  format in Stage 2 profiling (`TOKEN TAG` only).
+- **Alternatives considered:** Using the original file's starting line number as the ID instead
+  of a fresh index. Rejected because line numbers shift if any lines are removed (e.g. duplicate
+  sentences), which would make IDs non-contiguous and confusing; a clean 0-based per-split index
+  is simpler and every ID is traceable to a raw start_line via `changes.csv`.
+- **Risk:** IDs are not stable across raw-file edits upstream (if MasakhaNER updates its data,
+  regenerating IDs here would renumber everything) — acceptable for a one-off coursework pipeline.
+- **Confidence:** Medium — this is a default naming choice, not dictated by the data.
+
+(Further entries added during Stage 4/5/6 as validation and reporting decisions are made.)

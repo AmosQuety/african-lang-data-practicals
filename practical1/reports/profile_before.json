@@ -1,0 +1,349 @@
+{
+  "splits": [
+    {
+      "split": "train",
+      "sentence_count": 1428,
+      "token_count": 33003,
+      "unique_token_count": 11362,
+      "sentence_length_distribution": {
+        "min": 1,
+        "median": 21.0,
+        "mean": 23.11,
+        "max": 91
+      },
+      "label_distribution": {
+        "O": 27964,
+        "B-LOC": 678,
+        "B-DATE": 429,
+        "I-DATE": 530,
+        "I-LOC": 151,
+        "B-PER": 1319,
+        "B-ORG": 655,
+        "I-ORG": 497,
+        "I-PER": 780
+      },
+      "empty_sentence_count": 0,
+      "one_token_sentence_count": 1,
+      "one_token_sentence_examples": [
+        {
+          "start_line": 19929,
+          "token": ".",
+          "tag": "O"
+        }
+      ],
+      "exact_duplicate_sentence_groups_within_split": 8,
+      "exact_duplicate_sentence_instances_within_split": 8,
+      "exact_duplicate_examples_within_split": [
+        {
+          "text": "Sizoni ewedde baamalira mu kyamwenda ku ttiimu 21 .",
+          "count": 2
+        },
+        {
+          "text": "Bali ku nnamba Dr . Katende 0701891189 oba Nkuubi ku 0772672551 .",
+          "count": 2
+        },
+        {
+          "text": "Mu kiseera kino Kawala akyapooca nebiwundu mu ddwaaliro e Kiruddu .",
+          "count": 2
+        },
+        {
+          "text": "Lumumba yawaddeyo 10 , 000 , 000 okudduukirira emirimu gyabavubuka .",
+          "count": 2
+        },
+        {
+          "text": "Nanfuka yategeezezza akakiiko nti yonna gyaddukidde okufuna obuyambi tabufunye kati yabudama Kasangati ate Namugga abeera Wampeewo mu Kito , e Kamwokya tebakkirizibwa kulinnyawo .",
+          "count": 2
+        },
+        {
+          "text": "Ate Christopher Conne yakubirizza abayizi okwagala okusoma nokukujjumbira .",
+          "count": 2
+        },
+        {
+          "text": "Yayongeddeko nti ekyabatutte mu kkooti kwe kulaba ngeyimiriza okuzimba okugenda mu maaso kuba kwa gadibengalye .",
+          "count": 2
+        },
+        {
+          "text": "Mu birala bye baayogeddeko mwe mwabadde okusaba abaami ba Kabaka abatongole okwongera okukolaganira awamu ne bassentebe bebyalo nga waliwo omuntu aliiko ekifo kye kyatunda okwewala okusika omugwa .",
+          "count": 2
+        }
+      ],
+      "unicode_issue_sentence_count": 0,
+      "unicode_issue_examples": [],
+      "invalid_bio_sentence_count": 3,
+      "invalid_bio_examples": [
+        {
+          "start_line": 6309,
+          "text": "Amagatte bibiri ebivunaanyizibwa ku byemmere okuli ekya Food and Agriculture Organization FAO , ne World Food Programme WFP yalaze nti amawanga 53 mu nsi yonna ge goolekedde okugwamu enjala nga ku gano kuliko aga Africa ataano okuli Democratic Republic of the Congo , Ethiopia , Nigeria , South Sudan ne Sudan .",
+          "tags": [
+            "I-ORG",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "B-ORG",
+            "I-ORG",
+            "I-ORG",
+            "I-ORG",
+            "I-ORG",
+            "O",
+            "O",
+            "B-ORG",
+            "I-ORG",
+            "I-ORG",
+            "I-ORG",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "B-LOC",
+            "O",
+            "O",
+            "B-LOC",
+            "I-LOC",
+            "I-LOC",
+            "I-LOC",
+            "I-LOC",
+            "O",
+            "B-LOC",
+            "O",
+            "B-LOC",
+            "O",
+            "B-LOC",
+            "I-LOC",
+            "O",
+            "B-LOC",
+            "O"
+          ],
+          "issues": [
+            {
+              "index": 0,
+              "issue": "'I-ORG' follows 'O' (I- tag with no preceding B-/I- of same type)"
+            }
+          ]
+        },
+        {
+          "start_line": 17415,
+          "text": "Wabwire nabatebuka namuddusa ku kitebe kya poliisi eMpigi gya kuumirwa mu byokwerinda ebyamaanyi . Ono nga atuuziddwa ku poliisi eMpigi yegaanye ebyokukolagana ne Younga Mulo nti aba bodaboda banne babimusibako busibu olwempalana gye bamulinako . Ssali ategezeza poliisi nti tayogerangako na Young Mulo ku ssimu wabula nakkiriza nti babadde baludde nga bamutwala ku poliisi nga bamulumiriza okubba pikipiki enfunda nga nnya naye nga",
+          "tags": [
+            "I-PER",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "B-LOC",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "B-LOC",
+            "O",
+            "O",
+            "O",
+            "B-PER",
+            "I-PER",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "B-PER",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "B-PER",
+            "I-PER",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O"
+          ],
+          "issues": [
+            {
+              "index": 0,
+              "issue": "'I-PER' follows 'O' (I- tag with no preceding B-/I- of same type)"
+            }
+          ]
+        },
+        {
+          "start_line": 25539,
+          "text": "Azira ne Farouk Miya wabadde tewakola bulungi kuba baalemeddwa wadde okukubayo paasi etegeerekeka nti omuteebi ayinza okusiba omupiira ne .",
+          "tags": [
+            "I-PER",
+            "O",
+            "B-PER",
+            "I-PER",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O"
+          ],
+          "issues": [
+            {
+              "index": 0,
+              "issue": "'I-PER' follows 'O' (I- tag with no preceding B-/I- of same type)"
+            }
+          ]
+        }
+      ],
+      "malformed_line_count": 0,
+      "malformed_line_examples": []
+    },
+    {
+      "split": "dev",
+      "sentence_count": 200,
+      "token_count": 3771,
+      "unique_token_count": 2009,
+      "sentence_length_distribution": {
+        "min": 6,
+        "median": 17.0,
+        "mean": 18.86,
+        "max": 49
+      },
+      "label_distribution": {
+        "O": 3327,
+        "B-DATE": 32,
+        "I-DATE": 33,
+        "B-PER": 170,
+        "I-PER": 78,
+        "B-LOC": 56,
+        "B-ORG": 30,
+        "I-ORG": 22,
+        "I-LOC": 23
+      },
+      "empty_sentence_count": 0,
+      "one_token_sentence_count": 0,
+      "one_token_sentence_examples": [],
+      "exact_duplicate_sentence_groups_within_split": 0,
+      "exact_duplicate_sentence_instances_within_split": 0,
+      "exact_duplicate_examples_within_split": [],
+      "unicode_issue_sentence_count": 0,
+      "unicode_issue_examples": [],
+      "invalid_bio_sentence_count": 0,
+      "invalid_bio_examples": [],
+      "malformed_line_count": 0,
+      "malformed_line_examples": []
+    },
+    {
+      "split": "test",
+      "sentence_count": 407,
+      "token_count": 9841,
+      "unique_token_count": 4501,
+      "sentence_length_distribution": {
+        "min": 6,
+        "median": 23,
+        "mean": 24.18,
+        "max": 67
+      },
+      "label_distribution": {
+        "O": 8422,
+        "B-PER": 379,
+        "I-PER": 223,
+        "B-ORG": 153,
+        "B-LOC": 209,
+        "B-DATE": 113,
+        "I-DATE": 143,
+        "I-LOC": 86,
+        "I-ORG": 113
+      },
+      "empty_sentence_count": 0,
+      "one_token_sentence_count": 0,
+      "one_token_sentence_examples": [],
+      "exact_duplicate_sentence_groups_within_split": 4,
+      "exact_duplicate_sentence_instances_within_split": 4,
+      "exact_duplicate_examples_within_split": [
+        {
+          "text": "Tujja kukutuusaako ebisingawo ku ggulire lino .",
+          "count": 2
+        },
+        {
+          "text": "Akulira poliisi ye Mpigi , Erias Twesigye agambye nti Ssebunya agguddwaako omusango gwobubbi ku fayiro nnamba SD 0518022019 era waakutwalibwa mu kkooti avunaanibwe .",
+          "count": 2
+        },
+        {
+          "text": "Cooperative eyasooka okuwandiikibwa mu 1964 , eyawandiikibwa mu 1997 yeddiza ebyobugagga bya Cooperative bye yasangawo .",
+          "count": 2
+        },
+        {
+          "text": "Ensonda okuva ku poliisi e Kawempe zaategeezezza nti oluvannyuma abaserikale baafulumizza Yiga ne bamussa mu mmotoka ne bamuvuga okumutuusa ku SID e Kireka gye yasuze okutuusa Mmande gyagenda okuggyibwa atwalibwe e Kibuli awali fayiro endala .",
+          "count": 2
+        }
+      ],
+      "unicode_issue_sentence_count": 0,
+      "unicode_issue_examples": [],
+      "invalid_bio_sentence_count": 0,
+      "invalid_bio_examples": [],
+      "malformed_line_count": 0,
+      "malformed_line_examples": []
+    }
+  ],
+  "cross_split_exact_duplicates": [
+    {
+      "splits": [
+        "train",
+        "test"
+      ],
+      "count": 1,
+      "examples": [
+        "Ye omubaka we Buvuma mu Palamenti Robert Migadde Ndugwa yagambye nti ebbanga ddene baludde nga basaba Gavumenti ebeereko kyekolera abavubi abeewaddeyo ne bava ku nvuba embi okusinga okubaleka mu bbanga ate nga bwe banaabaleka mu bbanga bagenda kuddayo bavube obwennyanja obuto ."
+      ]
+    }
+  ]
+}
