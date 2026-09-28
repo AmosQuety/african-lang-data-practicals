@@ -132,6 +132,42 @@ this assistant's confidence, for the authors to check.
 - **Confidence:** Medium — threshold is a reasonable default, not
   empirically tuned on this dataset (which doesn't exist yet).
 
+### D007 — Consent form leaves age/consent threshold to course guidance
+
+- **Decision:** `CONSENT_FORM.md` does not set a specific minimum age or
+  guardian-consent rule; it flags this explicitly as `[FILL IN — confirm
+  age/consent requirements with course guidance]` rather than guessing one.
+- **Evidence or reasoning:** The brief doesn't specify a threshold, and this
+  is exactly the kind of institution-specific ethics rule the top-level
+  instruction says to leave to "our course's ethics guidance where it
+  differs." Guessing a number here (e.g. "18+") could be wrong for the
+  course's actual policy and would be presented with false confidence.
+- **Alternatives considered:** Defaulting to "contributors must be 18+" —
+  rejected as an invented rule with no basis in the assignment text.
+- **Risk:** If left unfilled, collection could start without a clear
+  consent-age policy. Flagged prominently in `CONSENT_FORM.md` and
+  `ETHICS_CHECKLIST.md` so it isn't missed.
+- **Confidence:** High that leaving it as a placeholder is correct; the
+  actual answer is out of scope for this assistant to decide.
+
+### D008 — Reviewer ID allocation is a proposed default, not fixed
+
+- **Decision:** `TEAM_PLAN.md` proposes `R01`/`R02` for the two Layer 1
+  independent reviewers and `R03`/`R04` for the two authors acting as
+  Layer 2 cross-reviewers, but this is a suggested default the authors can
+  change.
+- **Evidence or reasoning:** Nothing in the brief mandates specific codes;
+  a concrete starting proposal is more useful to fill in than an empty
+  template, and scripts (`make_review_sheet.py`, `compute_agreement.py`)
+  don't hardcode these values — they read whatever `reviewer_id` appears in
+  the sheets.
+- **Alternatives considered:** Leaving reviewer IDs entirely as `[FILL IN]`
+  with no example — rejected, a worked example makes the template easier
+  to use correctly.
+- **Risk:** None beyond the authors needing to actually update it if they
+  recruit different reviewers.
+- **Confidence:** High.
+
 *(Further entries are appended in later stages as decisions come up —
 schema field choices are in `docs/SCHEMA.md`'s rationale section and
 summarised as D007+ below as validation, review and release stages are

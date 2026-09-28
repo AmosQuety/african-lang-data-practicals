@@ -29,3 +29,15 @@ UTC. Written as work happens, not reconstructed afterward.
 - Wrote `docs/schema.json` (JSON Schema draft-07) and `docs/SCHEMA.md`
   (human-readable) for the row-level schema.
 - Wrote `docs/raw_template.csv` (header-only) and `docs/FILLING_GUIDE.md`.
+- Committed (`34a024d`) and pushed branch `practical2-run` to origin.
+
+## 2026-09-28T11:58:00Z — Stage 2: ethics/collection/teamwork docs
+
+- Wrote `docs/CONSENT_FORM.md` (English consent script, contact details and
+  date left as `[FILL IN]`), `docs/COLLECTION_PROTOCOL.md` (what to
+  collect/avoid, anonymous ID handling, translation guidance),
+  `docs/ETHICS_CHECKLIST.md` (pre-release checklist), and
+  `docs/TEAM_PLAN.md` (role/ID-range/timeline template with a
+  CONTRIBUTIONS section). All four are marked as drafts at the top, per
+  instructions, with placeholders for names/dates/ranges the authors must
+  fill in.
