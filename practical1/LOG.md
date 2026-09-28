@@ -81,3 +81,20 @@ action as recorded by the tool environment).
 - Recorded D11 in `DECISIONS.md`: near-duplicate detection was not attempted (explicitly
   distinguished from D5/D6, where a check was run and returned zero results) — corrected an
   earlier draft of REPORT.md that had implied "none found" for near-duplicates.
+
+### 2026-09-28 — Stage 6: Hand-off
+- Wrote `practical1/README.md` (folder layout, exact re-run commands) and
+  `practical1/requirements.txt` (no third-party dependencies — stdlib only, tested on
+  Python 3.11.15).
+- Wrote `practical1/VIVA_NOTES.md`: anticipated viva questions, each answered strictly from
+  `DECISIONS.md` and the reports, including honest "this was a default"/"I'm not certain"
+  answers where that's the true answer (e.g. BIO-fix correctness, near-duplicate scope).
+- **Reproducibility check:** recorded MD5 checksums of all 10 pipeline output files
+  (`data/processed/*.jsonl`, `reports/changes.csv`, `reports/bio_issues.csv`,
+  `reports/profile_before.json`, `reports/profile_after.json`, `reports/validation.md`,
+  `reports/manual_review_sample.csv`, `reports/preprocess_summary.json`). Deleted all of them
+  (leaving only `data/raw/` and the scripts), then re-ran the full pipeline from scratch in the
+  order listed in `README.md`. Compared checksums: **all 10 files byte-identical** to the
+  pre-deletion versions. `git diff --stat practical1/data/raw` confirmed the raw files were
+  never touched (no diff). Pipeline is confirmed reproducible.
+- Final commit and push to `practical1-run`.

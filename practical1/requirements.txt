@@ -1,0 +1,8 @@
+# Practical I pipeline dependencies
+#
+# All scripts (scripts/profile.py, scripts/preprocess.py, scripts/validate.py,
+# scripts/sample_for_review.py) use only the Python standard library
+# (json, csv, argparse, unicodedata, statistics, random, pathlib, collections).
+# No third-party packages are required.
+#
+# Tested with Python 3.11.15. Any Python 3.8+ interpreter should work.
