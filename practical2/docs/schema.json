@@ -1,0 +1,80 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/AmosQuety/african-lang-data-practicals/practical2/docs/schema.json",
+  "title": "Practical 2 dataset entry",
+  "description": "One row of the Luganda/Yoruba short-text dataset. See docs/SCHEMA.md for the human-readable version and field-by-field rationale.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "language",
+    "text",
+    "translation_en",
+    "contributor_id",
+    "source_type",
+    "reviewed",
+    "reviewed_by_independent"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Stable unique identifier for this entry, e.g. 'lug-0001'.",
+      "pattern": "^[a-z]{3}-[0-9]{4,}$"
+    },
+    "language": {
+      "type": "string",
+      "description": "ISO 639-3 code of the entry's language. Only these two are in scope for this dataset.",
+      "enum": ["lug", "yor"]
+    },
+    "text": {
+      "type": "string",
+      "description": "The original-language text (Luganda or Yoruba). Required, non-empty.",
+      "minLength": 1
+    },
+    "translation_en": {
+      "type": "string",
+      "description": "English translation of `text`. REQUIRED for every entry (see DECISIONS.md).",
+      "minLength": 1
+    },
+    "contributor_id": {
+      "type": "string",
+      "description": "Anonymous code identifying who contributed this entry, e.g. 'C001'. Never a real name.",
+      "pattern": "^C[0-9]{3,}$"
+    },
+    "region": {
+      "type": ["string", "null"],
+      "description": "Free-text region/locality associated with the entry (optional)."
+    },
+    "dialect": {
+      "type": ["string", "null"],
+      "description": "Dialect label, if known (optional)."
+    },
+    "date_collected": {
+      "type": ["string", "null"],
+      "description": "Month the entry was collected, format YYYY-MM.",
+      "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$"
+    },
+    "source_type": {
+      "type": "string",
+      "description": "How this entry originated.",
+      "enum": ["self-written", "volunteer-contributed", "proverb", "other"]
+    },
+    "domain": {
+      "type": ["string", "null"],
+      "description": "Topic/domain tag, e.g. 'greetings', 'proverb', 'daily-life' (optional)."
+    },
+    "reviewed": {
+      "type": "boolean",
+      "description": "True once at least one human review layer has looked at this entry."
+    },
+    "reviewer_id": {
+      "type": ["string", "null"],
+      "description": "Anonymous code of the reviewer who most recently reviewed this entry, e.g. 'R01'. Blank/null if unreviewed.",
+      "pattern": "^R[0-9]{2,}$"
+    },
+    "reviewed_by_independent": {
+      "type": "boolean",
+      "description": "True ONLY if reviewed by a fluent speaker of the entry's language who did NOT collect the entry (Layer 1, independent review). False otherwise, including when only Layer 2 cross-review or no review has happened."
+    }
+  }
+}

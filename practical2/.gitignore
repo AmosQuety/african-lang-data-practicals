@@ -1,0 +1,13 @@
+# Local-only files: never commit anonymous-ID-to-real-person mappings,
+# credentials, or environment-specific junk.
+*contributor_map*
+*reviewer_map*
+*id_map*
+*.env
+.env.*
+HF_TOKEN*
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+.DS_Store
