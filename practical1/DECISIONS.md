@@ -167,4 +167,28 @@ Entries are written as decisions are made, in order.
   regenerating IDs here would renumber everything) — acceptable for a one-off coursework pipeline.
 - **Confidence:** Medium — this is a default naming choice, not dictated by the data.
 
-(Further entries added during Stage 4/5/6 as validation and reporting decisions are made.)
+## D10: Manual review sample size and allocation
+
+- **Decision:** 100 sentences total, drawn with a fixed seed (42) from the RAW data,
+  allocated proportionally to split size using largest-remainder rounding: train 70, dev 10,
+  test 20.
+- **Evidence:** Raw split sizes are train 1428, dev 200, test 407 (total 2035 sentences,
+  from `profile_before.json`). Proportional shares of 100 are 70.17 (train), 9.83 (dev), 20.0
+  (test); rounding down and distributing the 0 remaining slot(s) by largest fractional part
+  gives exactly 70/10/20 (this happened to require no remainder redistribution since the
+  base allocation already summed to 100).
+- **Alternatives considered:** Equal allocation across splits (33/33/34) — rejected because it
+  would over-represent dev (a small split) relative to train, giving a less representative
+  overall sample of the corpus. Sampling from processed data instead of raw — rejected because
+  the task explicitly says to sample from the RAW data (so removed duplicates and pre-fix BIO
+  sentences are still reviewable), with processed_text shown alongside for comparison.
+  Sample size 100 was specified directly by the task, not chosen by me.
+- **Risk:** A sentence removed as a duplicate during preprocessing appears in the sample with
+  `processed_text` = "(removed during preprocessing - see changes.csv)" rather than a real
+  processed counterpart — this is intentional (shows the student what got removed) but could
+  look like an error if not read carefully; noted here and in the sample's own column.
+- **Confidence:** High on reproducibility (seed 42, deterministic proportional allocation).
+  Medium on whether 100/proportional is the ideal QA sampling design in general — it satisfies
+  the task's explicit instruction, not an independently derived power calculation.
+
+(Further entries added during Stage 5/6 as reporting decisions are made.)

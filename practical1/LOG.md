@@ -55,3 +55,18 @@ action as recorded by the tool environment).
   fully_resolved=yes).
 - Verified programmatically that every output sentence has `len(tokens) == len(ner_tags)`
   (assertion in the script, plus an independent check afterward) — all passed.
+
+### 2026-09-28 — Stage 4: Validation
+- Ran `scripts/profile.py --jsonl` against `practical1/data/processed/`, producing
+  `profile_after.json`/`.md`. Compared to `profile_before`: 0 duplicates remain within any
+  split, 0 invalid BIO sequences remain, token counts dropped by exactly the number of tokens in
+  removed duplicate sentences (train 33003->32883, test 9841->9758, dev unchanged at 3771).
+  The train/test cross-split duplicate is still present in both profiles, as intended (D7).
+- Wrote `scripts/validate.py` with automated assertions: valid JSONL, token/tag length match,
+  valid BIO, no empty sentences, no within-split duplicates, unique IDs per split, and an
+  informational (non-gating) check that surfaces the known train/test overlap. Wrote
+  `practical1/reports/validation.md` — **all 19 checks passed**.
+- Wrote `scripts/sample_for_review.py`. Drew a reproducible (seed=42) 100-sentence sample from
+  RAW data, proportional to split size (train 70, dev 10, test 20). Wrote
+  `practical1/reports/manual_review_sample.csv` with `my_verdict`/`my_notes` left blank for
+  the student. Recorded the allocation method as D10 in `DECISIONS.md`.

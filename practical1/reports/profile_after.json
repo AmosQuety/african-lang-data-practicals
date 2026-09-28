@@ -1,0 +1,127 @@
+{
+  "splits": [
+    {
+      "split": "train",
+      "sentence_count": 1420,
+      "token_count": 32883,
+      "unique_token_count": 11362,
+      "sentence_length_distribution": {
+        "min": 1,
+        "median": 21.0,
+        "mean": 23.16,
+        "max": 91
+      },
+      "label_distribution": {
+        "O": 27862,
+        "B-LOC": 673,
+        "B-DATE": 427,
+        "I-DATE": 527,
+        "I-LOC": 151,
+        "B-PER": 1314,
+        "B-ORG": 656,
+        "I-ORG": 496,
+        "I-PER": 777
+      },
+      "empty_sentence_count": 0,
+      "one_token_sentence_count": 1,
+      "one_token_sentence_examples": [
+        {
+          "start_line": 824,
+          "token": ".",
+          "tag": "O"
+        }
+      ],
+      "exact_duplicate_sentence_groups_within_split": 0,
+      "exact_duplicate_sentence_instances_within_split": 0,
+      "exact_duplicate_examples_within_split": [],
+      "unicode_issue_sentence_count": 0,
+      "unicode_issue_examples": [],
+      "invalid_bio_sentence_count": 0,
+      "invalid_bio_examples": [],
+      "malformed_line_count": 0,
+      "malformed_line_examples": []
+    },
+    {
+      "split": "dev",
+      "sentence_count": 200,
+      "token_count": 3771,
+      "unique_token_count": 2009,
+      "sentence_length_distribution": {
+        "min": 6,
+        "median": 17.0,
+        "mean": 18.86,
+        "max": 49
+      },
+      "label_distribution": {
+        "O": 3327,
+        "B-DATE": 32,
+        "I-DATE": 33,
+        "B-PER": 170,
+        "I-PER": 78,
+        "B-LOC": 56,
+        "B-ORG": 30,
+        "I-ORG": 22,
+        "I-LOC": 23
+      },
+      "empty_sentence_count": 0,
+      "one_token_sentence_count": 0,
+      "one_token_sentence_examples": [],
+      "exact_duplicate_sentence_groups_within_split": 0,
+      "exact_duplicate_sentence_instances_within_split": 0,
+      "exact_duplicate_examples_within_split": [],
+      "unicode_issue_sentence_count": 0,
+      "unicode_issue_examples": [],
+      "invalid_bio_sentence_count": 0,
+      "invalid_bio_examples": [],
+      "malformed_line_count": 0,
+      "malformed_line_examples": []
+    },
+    {
+      "split": "test",
+      "sentence_count": 403,
+      "token_count": 9758,
+      "unique_token_count": 4501,
+      "sentence_length_distribution": {
+        "min": 6,
+        "median": 23,
+        "mean": 24.21,
+        "max": 67
+      },
+      "label_distribution": {
+        "O": 8353,
+        "B-PER": 376,
+        "I-PER": 222,
+        "B-ORG": 151,
+        "B-LOC": 206,
+        "B-DATE": 110,
+        "I-DATE": 143,
+        "I-LOC": 86,
+        "I-ORG": 111
+      },
+      "empty_sentence_count": 0,
+      "one_token_sentence_count": 0,
+      "one_token_sentence_examples": [],
+      "exact_duplicate_sentence_groups_within_split": 0,
+      "exact_duplicate_sentence_instances_within_split": 0,
+      "exact_duplicate_examples_within_split": [],
+      "unicode_issue_sentence_count": 0,
+      "unicode_issue_examples": [],
+      "invalid_bio_sentence_count": 0,
+      "invalid_bio_examples": [],
+      "malformed_line_count": 0,
+      "malformed_line_examples": []
+    }
+  ],
+  "cross_split_exact_duplicates": [
+    {
+      "splits": [
+        "train",
+        "test"
+      ],
+      "count": 1,
+      "examples": [
+        "Ye omubaka we Buvuma mu Palamenti Robert Migadde Ndugwa yagambye nti ebbanga ddene baludde nga basaba Gavumenti ebeereko kyekolera abavubi abeewaddeyo ne bava ku nvuba embi okusinga okubaleka mu bbanga ate nga bwe banaabaleka mu bbanga bagenda kuddayo bavube obwennyanja obuto ."
+      ]
+    }
+  ]
+}
