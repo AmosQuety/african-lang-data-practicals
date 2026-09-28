@@ -140,3 +140,31 @@ UTC. Written as work happens, not reconstructed afterward.
   agreement / kappa 1.0 on the 2 ids both reviewers had completed, and
   correctly reported the 3rd (`yor-0002`) as incomplete rather than a
   disagreement. Output discarded after inspection.
+- Committed (`b5d73ee`) and pushed.
+
+## 2026-09-28T13:25:00Z — Stage 4d: apply_corrections.py
+
+- Wrote `scripts/apply_corrections.py`: parses the `field: value` mini-
+  syntax in `reviewer_correction` (D020), applies non-conflicting
+  corrections to a new `data/processed/dataset_corrected.jsonl` (original
+  `dataset.jsonl` never modified, D021), logs every applied change to
+  `reports/corrections_log.csv` (id, language, field, before, after,
+  reviewer, layer), and routes to `reports/conflicts.csv` both (a) any
+  Layer 2 correction that touches `text` (never auto-applied, always
+  routed regardless of what Layer 1 does) and (b) any field where two
+  sheets propose different values. Updates `reviewed` /
+  `reviewed_by_independent` / `reviewer_id` per D022.
+- Smoke-tested against the Stage 4b/4c sample sheets with hand-added
+  corrections covering all four paths: a Layer 1 translation fix (lug-0001,
+  applied), a Layer 1 text fix (lug-0002, applied — Layer 1 is allowed to
+  correct text), a Layer 2 attempt to correct `text` (yor-0002 — correctly
+  blocked and routed to conflicts.csv, NOT applied to the dataset), two
+  Layer 2 sheets proposing different `region` corrections for the same
+  overlap entry lug-0001 (correctly routed to conflicts.csv, neither
+  applied), and a Layer 2 translation fill-in for a previously-empty
+  translation (lug-0008, applied). Verified by reading the output JSONL
+  and both report CSVs by eye — all four paths behaved exactly as
+  designed, including `reviewed`/`reviewed_by_independent`/`reviewer_id`
+  being set correctly (R01 for Layer-1-reviewed lug entries,
+  R03/R04 for Layer-2-only entries, `reviewed_by_independent` staying
+  false for Layer-2-only entries). Output discarded after inspection.

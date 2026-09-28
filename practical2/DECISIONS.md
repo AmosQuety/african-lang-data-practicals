@@ -458,6 +458,87 @@ this assistant's confidence, for the authors to check.
 - **Confidence:** Medium — a reasonable default vocabulary, not specified
   in the brief.
 
+### D020 — `reviewer_correction` mini-syntax
+
+- **Decision:** `reviewer_correction` holds one or more `field: new value`
+  clauses separated by ` | `, e.g. `translation_en: A better gloss` or
+  `text: Fixed text | domain: proverb`. Recognised fields are the editable
+  content/metadata fields (`text`, `translation_en`, `contributor_id`,
+  `region`, `dialect`, `date_collected`, `source_type`, `domain`); `id`,
+  `language`, and the review-status fields are never editable this way
+  (status fields are derived by the script itself from which sheets
+  reviewed the entry).
+- **Evidence or reasoning:** The brief specifies the column exists and
+  that "the reviewer_correction values" get applied, but not its format.
+  A single free-text cell needs *some* convention to know which field a
+  correction targets, since a reviewer might want to fix the translation,
+  a metadata field, or (Layer 1 only) the text itself. A small
+  human-writable `field: value` syntax is easy to type in a spreadsheet
+  cell and easy to parse without a dependency.
+- **Alternatives considered:** One review-sheet column per editable field
+  — rejected, contradicts the brief's fixed column list ("Columns for all
+  sheets: id, language, text, translation_en, auto_flags,
+  reviewer_verdict, reviewer_correction, reviewer_notes"). Assuming
+  `reviewer_correction` always corrects the single field the sheet is
+  "about" — rejected, ambiguous for Layer 2 sheets which review multiple
+  fields (translation, metadata, PII) at once.
+- **Risk:** A reviewer typing free text without the `field:` prefix
+  produces a correction that's silently ignored (no field recognised).
+  Mitigated by documenting the syntax prominently in
+  `reports/review/README.md` and each sheet's `.NOTE.md`.
+- **Confidence:** Medium — a reasonable, simple convention; not specified
+  by the brief.
+
+### D021 — Corrections write a new file, never overwrite dataset.jsonl
+
+- **Decision:** `apply_corrections.py` writes
+  `data/processed/dataset_corrected.jsonl` and never modifies
+  `data/processed/dataset.jsonl` in place.
+- **Evidence or reasoning:** Keeping the preprocessing output immutable
+  once written preserves a clear, re-runnable provenance chain (raw ->
+  preprocessed -> corrected) and means re-running `preprocess.py` (e.g.
+  after adding more raw data) can never silently clobber review work
+  already recorded against a specific corrected version. `build_release.py`
+  (Stage 5) is documented to prefer `dataset_corrected.jsonl` when present.
+- **Alternatives considered:** Overwriting `dataset.jsonl` in place —
+  rejected, destroys the distinction between "what preprocessing produced"
+  and "what humans corrected," which matters for debugging and for the
+  dataset card's "Preprocessing" vs. "Validation" sections being able to
+  describe different things.
+- **Risk:** An author could forget `dataset_corrected.jsonl` exists and
+  keep working from `dataset.jsonl`. Mitigated: `build_release.py` picks
+  the corrected file automatically when present and says so in its
+  output.
+- **Confidence:** High.
+
+### D022 — `reviewed_by_independent` / `reviewer_id` bookkeeping after corrections
+
+- **Decision:** After applying corrections, an entry is marked
+  `reviewed = true` if it has a non-blank `reviewer_verdict` in ANY
+  completed sheet. It is marked `reviewed_by_independent = true` only if
+  its OWN language's Layer 1 sheet gave it a non-blank verdict — Layer 2
+  (cross-author) review alone never sets this true, matching the schema's
+  definition. `reviewer_id` is set to the Layer 1 reviewer's code
+  (`R01`/`R02` per `docs/TEAM_PLAN.md`'s proposed defaults) when
+  independently reviewed, else to whichever Layer 2 cross-reviewer
+  (`R03`/`R04`) completed it, if any.
+- **Evidence or reasoning:** Directly follows the schema field definition
+  ("reviewed_by_independent: true only if reviewed by a fluent speaker who
+  did not collect the entry"), which the pipeline is built to distinguish
+  from Layer 2's English-side-only review.
+- **Alternatives considered:** Leaving `reviewer_id` blank unless a real
+  per-row reviewer code is threaded through the sheets — rejected as
+  strictly less useful for a small two-team project where reviewer
+  identity is 1:1 with which sheet/layer touched the row; the codes used
+  here are exactly the ones `docs/TEAM_PLAN.md` proposes, so this is
+  consistent rather than invented from nothing.
+- **Risk:** If the authors deviate from the `R01`-`R04` code assignment in
+  `TEAM_PLAN.md` (e.g. recruit a different reviewer with a different
+  code), this hardcoded mapping in `apply_corrections.py` would need
+  updating to match. Flagged here so it isn't missed.
+- **Confidence:** Medium — correct given the current TEAM_PLAN defaults,
+  brittle if those change without updating the script.
+
 *(Further entries are appended in later stages as decisions come up —
 schema field choices are in `docs/SCHEMA.md`'s rationale section and
 summarised as D007+ below as validation, review and release stages are
