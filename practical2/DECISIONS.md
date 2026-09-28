@@ -168,6 +168,69 @@ this assistant's confidence, for the authors to check.
   recruit different reviewers.
 - **Confidence:** High.
 
+### D009 — Exact-duplicate key, invisible-character definition, blank booleans
+
+- **Decision (dup key):** Two entries are an "exact duplicate" if they have
+  the same `language` and the same `text` *after* normalisation (NFC,
+  invisible-char strip, whitespace cleanup, quote normalisation) — not
+  compared on raw/unprocessed text, and not on `translation_en`.
+- **Evidence or reasoning:** The brief lists "Exact duplicate removal" as
+  step (e) of preprocessing, after steps (a)-(d), implying it runs on
+  already-cleaned text; comparing raw text would miss duplicates that only
+  differ in whitespace/quote style, which is exactly the kind of
+  inconsistency this pipeline is meant to catch.
+- **Alternatives considered:** Also requiring `translation_en` to match —
+  rejected: two contributors could submit the same source text with
+  slightly different (both valid) English glosses, and we want to catch
+  the source-text duplicate regardless.
+- **Risk:** Two genuinely different entries that normalise to identical
+  text (rare for real sentences) would be incorrectly merged. Mitigated by
+  always logging removed rows to `reports/duplicates_removed.csv` for
+  human review, never deleting silently.
+- **Confidence:** Medium — reasonable reading of "duplicate," not
+  contradicted by the brief, but not spelled out explicitly either.
+
+- **Decision (invisible chars):** "Invisible/control/zero-width characters"
+  = Unicode general categories `Cf` (format characters: zero-width
+  space/joiner/non-joiner, left-to-right/right-to-left marks, byte-order
+  mark, etc.) and `Cc` (control characters) other than `\t`/`\n`/`\r`
+  (handled separately by whitespace cleanup). Combining marks (`Mn`/`Mc`),
+  which carry diacritic/tone information, are never touched by this step.
+- **Evidence or reasoning:** This is the standard Unicode-category
+  definition of "invisible" formatting/control characters, and explicitly
+  excludes combining marks to satisfy the separate, stronger diacritics
+  rule ("NEVER strip, add, or 'correct' diacritics or tone marks
+  automatically").
+- **Alternatives considered:** A hand-maintained list of specific
+  characters (e.g. just `U+200B`, `U+FEFF`) — rejected as more fragile;
+  category-based matching catches the whole class without needing to
+  enumerate every zero-width variant.
+- **Risk:** Very low — these categories are well-defined and stable.
+- **Confidence:** High.
+
+- **Decision (blank booleans):** At collection time, `reviewed` and
+  `reviewed_by_independent` are normally left blank; preprocessing treats a
+  blank/unrecognised value for these two fields as `False`, not as a
+  validation error.
+- **Evidence or reasoning:** `FILLING_GUIDE.md` tells contributors/authors
+  to leave these blank when submitting raw collection data (they're filled
+  in during the review stages, not at collection). A dataset entry that
+  hasn't been reviewed yet is, factually, not reviewed.
+- **Alternatives considered:** Requiring these fields to be explicitly
+  `TRUE`/`FALSE` and treating blank as invalid — rejected, would force
+  every contributor to type `FALSE` for two fields they can't meaningfully
+  fill in yet, for no safety benefit (the default is transparent and
+  correct: "not yet reviewed").
+- **Risk:** If a raw file has a genuine typo in one of these columns (e.g.
+  `"flase"`), it silently becomes `False` rather than raising an error.
+  Mitigated by `preprocess.py` itself: any raw value that isn't blank and
+  isn't a recognised true/false spelling is logged to
+  `reports/boolean_anomalies.csv` (not silently dropped), so a human can
+  check whether it should have been `True`.
+- **Confidence:** Medium — a reasonable default, but the silent-fallback
+  risk above is real and is why Stage 4 must flag unrecognised raw values
+  rather than trust this default blindly.
+
 *(Further entries are appended in later stages as decisions come up —
 schema field choices are in `docs/SCHEMA.md`'s rationale section and
 summarised as D007+ below as validation, review and release stages are

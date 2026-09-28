@@ -1,0 +1,11 @@
+id,language,text,translation_en,contributor_id,region,dialect,date_collected,source_type,domain,reviewed,reviewer_id,reviewed_by_independent
+,lug,TEST_LUG_TEXT_001 sample sentence alpha,TEST_EN_TRANSLATION_001 sample sentence alpha,C001,TestRegion,,2026-01,self-written,test,,,
+,lug,TEST_LUG_TEXT_002 café sample,TEST_EN_TRANSLATION_002 sample sentence beta,C001,TestRegion,,2026-01,proverb,test,,,
+,lug,  TEST_LUG_TEXT_003   sample   sentence   gamma  ,TEST_EN_TRANSLATION_003 sample sentence gamma,C002,,,2026-01,self-written,test,,,
+,lug,TEST_LUG_TEXT_003 sample sentence gamma,TEST_EN_TRANSLATION_003 sample sentence gamma,C002,,,2026-01,self-written,test,,,
+,lug,TEST_LUG_TEXT_004 sample sentence gamma nearby,TEST_EN_TRANSLATION_004 sample sentence gamma nearby,C002,,,2026-01,self-written,test,,,
+,lug,TEST_LUG_TEXT_005 curly ‘quote’ and “double”,TEST_EN_TRANSLATION_005 curly quote and double,C003,,,2026-01,self-written,test,,,
+,lug,TEST_LUG_TEXT_006 zero​width space hidden,TEST_EN_TRANSLATION_006 zero width space hidden,C003,,,2026-01,self-written,test,,,
+,lug,TEST_LUG_TEXT_007 no translation case,,C003,,,2026-01,self-written,test,,,
+,lug,TEST_LUG_TEXT_008 contact test@example.com or 0771234567,TEST_EN_TRANSLATION_008 contains fake pii patterns,C003,,,2026-01,self-written,test,,,
+id-conflict-001,lug,TEST_LUG_TEXT_009 conflict source A,TEST_EN_TRANSLATION_009 conflict source A,C003,,,2026-01,self-written,test,,,

@@ -41,3 +41,34 @@ UTC. Written as work happens, not reconstructed afterward.
   CONTRIBUTIONS section). All four are marked as drafts at the top, per
   instructions, with placeholders for names/dates/ranges the authors must
   fill in.
+- Committed (`5ee20c2`) and pushed.
+
+## 2026-09-28T12:10:00Z — Stage 3: preprocessing script
+
+- Wrote `scripts/common.py` (shared schema constants, boolean parsing,
+  text-normalisation primitives, JSONL/CSV I/O) used by every later
+  pipeline script, and `scripts/preprocess.py` (combine raw CSVs → NFC →
+  invisible-char strip → whitespace cleanup → quote normalisation → id
+  assignment → exact-dup removal → near-dup flagging → per-language
+  summary).
+- Created synthetic test fixtures `tests/fixtures/raw_sample_author1.csv`
+  and `raw_sample_author2.csv` (obviously-fake `TEST_LUG_TEXT_*` /
+  `TEST_YOR_TEXT_*` / `TEST_EN_TRANSLATION_*` strings) covering: an
+  NFC-decomposed vs. composed character, curly quotes, a zero-width space,
+  irregular whitespace, an exact duplicate, a near-duplicate, a missing
+  translation, fake-PII-shaped text, an English-looking Yoruba-labelled
+  entry, a translation identical to its source, a very short entry, and a
+  cross-file `id` conflict with differing text.
+- Smoke-tested `preprocess.py` against these fixtures in `/tmp/pp_smoke`
+  (outside the repo, never touching `data/`): 15 combined rows → 1 id
+  conflict correctly reported and the losing row dropped, 1 exact
+  duplicate removed, 1 NFC change / 1 invisible-char change / 1 whitespace
+  change / 1 quote change all correctly attributed to Luganda, final 14
+  entries written to a scratch `dataset.jsonl`. Output verified by eye
+  (curly quotes → straight, zero-width space removed with no meaning
+  change, decomposed café → composed). Near-duplicate detection code path
+  did not trigger on this particular fixture pair (ratio fell just under
+  the 0.90 threshold) — dedicated pytest coverage for that threshold is
+  added in Stage 4e with a tighter-controlled pair. No files under
+  `data/raw/` were touched; smoke-test output was in `/tmp`, not `reports/`
+  or `data/processed/`, and was discarded after inspection.

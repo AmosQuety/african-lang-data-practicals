@@ -1,0 +1,7 @@
+id,language,text,translation_en,contributor_id,region,dialect,date_collected,source_type,domain,reviewed,reviewer_id,reviewed_by_independent
+,yor,TEST_YOR_TEXT_001 sample sentence alpha,TEST_EN_TRANSLATION_101 sample sentence alpha,C101,TestRegion2,,2026-01,self-written,test,,,
+,yor,TEST_YOR_TEXT_002 this looks like English words the a of,TEST_EN_TRANSLATION_102 sample sentence beta,C101,,,2026-01,proverb,test,,,
+,yor,TEST_YOR_TEXT_003 identical translation case,TEST_YOR_TEXT_003 identical translation case,C102,,,2026-01,self-written,test,,,
+,yor,TEST_YOR_TEXT_004 short,TEST_EN_TRANSLATION_104 short,C102,,,2026-01,self-written,test,,,
+,yor,TEST_YOR_TEXT_005 sample sentence gamma delta epsilon zeta eta theta,TEST_EN_TRANSLATION_105 sample sentence gamma delta epsilon zeta eta theta long,C102,,,2026-01,self-written,test,TRUE,R02,TRUE
+id-conflict-001,yor,TEST_YOR_TEXT_006 conflict source B different text,TEST_EN_TRANSLATION_106 conflict source B different text,C102,,,2026-01,self-written,test,,,
