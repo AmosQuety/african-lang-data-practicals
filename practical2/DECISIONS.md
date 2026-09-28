@@ -231,6 +231,138 @@ this assistant's confidence, for the authors to check.
   risk above is real and is why Stage 4 must flag unrecognised raw values
   rather than trust this default blindly.
 
+### D010 — Length outlier rule and "very short" threshold
+
+- **Decision:** "Very short" = text under 3 characters (a separate,
+  always-on check). Length outliers use the standard-deviation rule only
+  (flag if `|length - mean| > 3 * population_stddev`, computed per
+  language), not the percentile rule — the brief offers both as examples
+  ("such as ... or ...").
+- **Evidence or reasoning:** The brief explicitly allows picking one
+  concrete rule ("flag by a clearly stated rule such as outside the
+  1st-99th percentile or more than 3 standard deviations"). At the target
+  scale (150-250 entries/language) a percentile-based rule would flag
+  exactly ~1-2 entries at each tail almost by construction regardless of
+  whether they're actually unusual, which is a worse signal than a
+  distribution-shape-aware std-dev rule at this sample size.
+- **Alternatives considered:** 1st-99th percentile — rejected for the
+  small-sample reason above. Both rules simultaneously — rejected as
+  needless complexity; one clearly stated rule is what's asked for.
+- **Risk:** With few entries, `stddev` itself is noisy, and 3-sigma may
+  flag nothing at all in a small, fairly uniform dataset (which is
+  arguably correct) or over-flag if one contributor writes unusually long
+  entries.
+- **Confidence:** Medium — a defensible default, not empirically tuned.
+
+### D011 — Translation length-ratio outlier bounds
+
+- **Decision:** Flag `translation_en` when `len(translation)/len(text)` is
+  outside `[0.15, 6.0]`, a fixed heuristic range rather than a statistical
+  one.
+- **Evidence or reasoning:** The brief asks for "very large length-ratio
+  outliers between text and translation" without a formula. A fixed range
+  is simpler and more interpretable for a check whose real purpose is
+  catching gross errors (empty-ish translations, or a translation that's
+  actually a paragraph of notes) rather than modelling a "normal" ratio
+  distribution, which for short proverbs-vs-English-gloss data doesn't
+  have an obviously meaningful mean/stddev shape.
+- **Alternatives considered:** Per-language statistical ratio-outlier
+  detection (same std-dev approach as D010) — rejected as overkill for a
+  sanity check whose failure mode (very large or very small ratio) is
+  already well captured by fixed, generous bounds; a statistical version
+  is added later only if real data shows the fixed bounds misbehaving.
+- **Risk:** A legitimately terse translation of a long proverb, or a
+  translation that includes a long bracketed explanatory note (explicitly
+  encouraged by `COLLECTION_PROTOCOL.md` for proverbs with no direct
+  equivalent), could trip this. It's a flag, not a rejection, so a human
+  resolves it.
+- **Confidence:** Medium.
+
+### D012 — Rare-character threshold
+
+- **Decision:** Within each language, a character is "rare" if it appears
+  in 2 or fewer entries dataset-wide (excluding whitespace); any entry
+  containing such a character is flagged.
+- **Evidence or reasoning:** "The rare-character rule must use each
+  language's OWN character distribution" — built here from the dataset
+  itself (there is no external reference corpus available/permitted per
+  NETWORK RULES). A small absolute-count threshold, rather than a
+  percentage, behaves more sensibly at the 150-250-entries-per-language
+  target size than a percentage would.
+- **Alternatives considered:** A frequency-percentage threshold (e.g.
+  "<0.5% of entries") — rejected, at ~200 entries that's <1 entry, making
+  it nearly equivalent to but less transparent than a small fixed count.
+- **Risk:** Real, legitimate letters that are simply infrequent in a small
+  dataset (e.g. a rarely-used Luganda or Yoruba letter/diacritic
+  combination) will be flagged even though they're correct. This is
+  explicitly expected and stated in validation.md's limitations section.
+- **Confidence:** Medium — reasonable given the constraint of having no
+  external reference corpus.
+
+### D013 — Region-spelling-inconsistency threshold
+
+- **Decision:** Two distinct (case-insensitively different) region strings
+  are flagged as possibly-inconsistent spellings if their
+  `difflib.SequenceMatcher` ratio is `>= 0.82`.
+- **Evidence or reasoning:** No formula given in the brief for "consistency
+  of metadata values (e.g. ... region spellings)"; a string-similarity
+  ratio is a standard, dependency-free (stdlib `difflib`) way to catch
+  near-duplicate free-text values like "Kampala" vs "Kampala " vs "kampala
+  region" without a hardcoded region gazetteer, which isn't available.
+- **Alternatives considered:** Exact case-insensitive match only —
+  rejected, misses whitespace/typo variants which are the actual failure
+  mode this check is meant to catch. A hardcoded list of valid Ugandan and
+  Nigerian regions — rejected as out of scope to source/maintain reliably.
+- **Risk:** 0.82 is an untuned threshold; could both over-flag genuinely
+  different nearby place names and under-flag very different misspellings
+  of the same place.
+- **Confidence:** Low-medium — this is the least evidence-backed threshold
+  in the pipeline; flagged here for the authors to sanity-check once real
+  region values exist.
+
+### D014 — "Looks like English" stopword-fraction threshold
+
+- **Decision:** An entry is flagged `language_looks_like_english` if 50%+
+  of its alphabetic words are in a small hardcoded list of ~35 common
+  English function words (the/a/is/of/...), and it has at least 3 words.
+- **Evidence or reasoning:** No formula given; function words are
+  deliberately chosen (rather than a full English dictionary, which risks
+  false negatives on Luganda/Yoruba entries that happen to contain
+  English-loanword content words) because they're near-universal in
+  English sentences and vanishingly unlikely to appear at high density in
+  genuine Luganda/Yoruba text by chance.
+- **Alternatives considered:** A full English-word-frequency dictionary —
+  rejected as a heavier dependency (would need an external wordlist) for
+  marginal gain over a small stopword list at this task's precision needs
+  (this is explicitly a hint, not a verdict).
+- **Risk:** Short entries or ones embedding an English loanword phrase
+  could trip this; entries under 3 words are exempted specifically because
+  the fraction is too noisy at that length. Explicitly documented as a
+  heuristic in validation.md.
+- **Confidence:** Medium.
+
+### D015 — Diacritic "mixed style" heuristic is Yoruba-specific and coarse
+
+- **Decision:** The `diacritic_mixed_style` flag only fires for Yoruba
+  entries that contain both a combining tone-mark character (grave/acute/
+  circumflex, U+0300-U+0302) and a subdot character (ẹ ọ ṣ and their
+  uppercase forms, or combining dot-below U+0323) in the same entry. It is
+  not applied to Luganda, which (to this assistant's non-fluent knowledge)
+  does not have an equivalent tone-mark-vs-subdot orthographic split.
+- **Evidence or reasoning:** The brief specifically calls out that "Yoruba
+  text may legitimately appear with full tone marks, with subdots only, or
+  with none" — implying the mixed-style concern is about a single entry
+  inconsistently combining conventions, which this narrowly targets.
+- **Alternatives considered:** Applying the same check to Luganda —
+  rejected without evidence Luganda has an analogous convention split;
+  doing so could generate meaningless flags. Left as a documented gap
+  rather than guessed at.
+- **Risk:** This is a coarse proxy, not a real orthographic rule engine; it
+  can miss genuine inconsistencies and can false-positive on legitimate
+  text. Explicitly flagged as needing a fluent reviewer in validation.md.
+- **Confidence:** Low — this assistant is not a fluent Yoruba or Luganda
+  speaker; the independent language reviewers are the real check here.
+
 *(Further entries are appended in later stages as decisions come up —
 schema field choices are in `docs/SCHEMA.md`'s rationale section and
 summarised as D007+ below as validation, review and release stages are

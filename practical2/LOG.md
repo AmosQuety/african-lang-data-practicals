@@ -72,3 +72,31 @@ UTC. Written as work happens, not reconstructed afterward.
   added in Stage 4e with a tighter-controlled pair. No files under
   `data/raw/` were touched; smoke-test output was in `/tmp`, not `reports/`
   or `data/processed/`, and was discarded after inspection.
+- Committed (`7a17210`) and pushed.
+
+## 2026-09-28T12:35:00Z — Stage 4a: validate_auto.py
+
+- Wrote `scripts/validate_auto.py`: schema/required-field checks, empty/
+  very-short-text, within- and cross-language duplicate detection, per-
+  language length outliers (3-sigma rule), per-language rare-character
+  flags (dataset's own char distribution), PII-shaped-text detection
+  (email/URL/@handle/Ugandan+Nigerian+generic-international phone
+  patterns/long digit runs/capitalised-token hint), region-spelling
+  consistency (difflib similarity), a heuristic language-label sanity
+  check (common-English-stopword fraction + per-language character-profile
+  comparison), Yoruba tone-mark-vs-subdot mixed-style + non-NFC detection,
+  and translation sanity (empty / identical-to-source / length-ratio
+  outlier). Writes `reports/validation.md` (per-language pass/fail table,
+  an explicit machine-checkable PII PASS/FAIL line for
+  `build_release.py` to gate on, and a written-out Limitations section)
+  and `reports/flags.csv`.
+- Ran it against the Stage-3 smoke-test output
+  (`/tmp/pp_smoke2/out/dataset.jsonl`, 14 synthetic entries): 26 flags
+  across 8 check types, including the deliberately-planted missing
+  translation, identical-translation, fake-PII strings, and the malformed
+  fixture id, all correctly caught. `rare_character` fired very often on
+  this fixture set specifically because the synthetic `TEST_LUG_TEXT_00N`
+  markers embed digits/ASCII tokens that aren't representative of real
+  Luganda/Yoruba text — expected fixture noise, not a script bug; real
+  collected data won't carry that prefix. Output discarded after
+  inspection (was in `/tmp`, not `reports/`).
