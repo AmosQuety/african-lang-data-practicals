@@ -210,3 +210,43 @@ UTC. Written as work happens, not reconstructed afterward.
   individually, which is the intended behaviour per Stage 3's spec
   ("trim, collapse runs of spaces, normalise line breaks"); fixed the test
   expectation, not the implementation). Re-ran: **35/35 passed.**
+- Committed (`042893f`) and pushed.
+
+## 2026-09-28T14:05:00Z — Stage 5: dataset card and release packaging
+
+- Wrote `release/DATASET_CARD_TEMPLATE.md` (HF dataset-card YAML front
+  matter + all required sections; every real fact about our data is a
+  `[FILL IN]` placeholder, mandatory review-coverage and small-sample
+  limitations included as required text).
+- Wrote `scripts/fill_card_stats.py` (prints per-language entry count,
+  length stats, unique tokens, diacritic-mark share, field completeness,
+  contributor count, reviewed/independently-reviewed share — prefers
+  `dataset_corrected.jsonl`, falls back to `dataset.jsonl`).
+- Wrote `scripts/build_release.py` (refuses to run on PII-check FAIL/
+  missing, unresolved `reports/conflicts.csv` rows, or any `[FILL IN`
+  left in the card; on success assembles combined + per-language
+  `release/{lug,yor}/` files, copies the card to `release/README.md`,
+  and writes a `release/LICENSE` notice marked proposed).
+- Wrote `scripts/upload_to_hf.py` (huggingface_hub-based, reads
+  `HF_TOKEN` from the environment only, refuses without it; loud
+  "do not run this unattended" docstring) and `docs/UPLOAD_GUIDE.md`
+  (Hugging Face primary steps incl. org/collaborator setup, plus
+  alternative steps for GitHub Releases, Zenodo, and Kaggle). **Per the
+  task brief, `upload_to_hf.py` was never executed** — only syntax-checked
+  (`python3 -m py_compile`).
+- Smoke-tested `fill_card_stats.py` against the Stage 4 corrected fixture
+  dataset — output looked sane (counts, length stats, review-share
+  percentages all matched the fixture's known composition).
+- Smoke-tested `build_release.py`'s three refusal gates independently: (1)
+  missing `validation.md` → refused; (2) `validation.md` present but PII
+  check FAIL (the real Stage 4a fixture output, which has 3 planted PII
+  flags) → refused; unresolved `conflicts.csv` rows from the Stage 4d
+  smoke test and the unfilled real `DATASET_CARD_TEMPLATE.md` were
+  correctly flagged simultaneously in both runs (all three checks run
+  before failing, not just the first). Then tested the success path with
+  a synthetic PASS validation report, an empty conflicts file, and a copy
+  of the card with placeholders replaced by obviously-fake filler text —
+  build succeeded, producing the expected `release/` layout (combined +
+  per-language jsonl/csv, README.md, LICENSE). All smoke-test output was
+  in `/tmp`, discarded after inspection; nothing was written to the
+  repo's real `release/` directory during testing.

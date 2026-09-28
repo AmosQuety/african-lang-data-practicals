@@ -539,6 +539,75 @@ this assistant's confidence, for the authors to check.
 - **Confidence:** Medium — correct given the current TEAM_PLAN defaults,
   brittle if those change without updating the script.
 
+### D023 — Release gating signals: how build_release.py checks each condition
+
+- **Decision:** `build_release.py` reads a specific literal line
+  (`"PII check: PASS"` / `"PII check: FAIL"`) from `reports/validation.md`
+  to gate on the PII check, treats any non-empty `reports/conflicts.csv`
+  as unresolved conflicts, and refuses on any literal `"[FILL IN"`
+  substring anywhere in the card file.
+- **Evidence or reasoning:** The brief says build_release.py must "refuse
+  to run if validation reports any failed PII check, if unresolved
+  conflicts remain in reports/conflicts.csv, or if any placeholder text
+  such as '[FILL IN]' remains in the card" — this implements each
+  condition as literally and mechanically-checkably as possible, and
+  `validate_auto.py` (Stage 4a) was deliberately written to emit that
+  exact PII-check line for this script to key off.
+- **Alternatives considered:** Re-running `validate_auto.py` from inside
+  `build_release.py` to get a live PII check — rejected, would silently
+  re-derive from whatever's in `data/processed/` rather than checking the
+  validation report the authors actually looked at, and duplicates
+  Stage 4a's logic.
+- **Risk:** If someone hand-edits `reports/validation.md` to say PASS
+  without re-running validation, or hand-deletes conflict rows without
+  actually resolving them, this script can't detect that — it trusts the
+  report files as given. This is inherent to a file-based gate; flagged
+  here so the authors know not to hand-edit reports.
+- **Confidence:** High that this matches the brief's literal requirement;
+  medium on robustness against adversarial/careless report tampering
+  (out of scope for a two-person course project).
+
+### D024 — Release layout: combined + per-language directories
+
+- **Decision:** `release/` gets a combined `dataset.jsonl`/`dataset.csv`
+  at the top level, plus `release/lug/dataset_lug.{jsonl,csv}` and
+  `release/yor/dataset_yor.{jsonl,csv}` in per-language subdirectories.
+- **Evidence or reasoning:** The brief asks for "per-language files for
+  the two configs" alongside the combined dataset, and Hugging Face
+  Datasets commonly organises multi-config datasets with one subdirectory
+  per config; this layout maps cleanly onto that without inventing
+  Hugging Face `configs:` YAML wiring the authors haven't confirmed yet
+  (see `docs/UPLOAD_GUIDE.md`, which explicitly leaves that manual step
+  to the authors once they've decided on final naming).
+- **Alternatives considered:** Flat files at the top level
+  (`dataset_lug.jsonl`, `dataset_yor.jsonl` with no subdirectories) —
+  considered simpler, but subdirectories make the "two configs" framing
+  more visually explicit and avoid filename collisions if more file types
+  are added later (e.g. a per-language card).
+- **Risk:** None significant; this is a packaging convention, not a
+  content decision, and easy to reorganise later if the authors want
+  something else for the actual Hugging Face upload.
+- **Confidence:** Medium — reasonable default, not the only valid choice.
+
+### D025 — LICENSE file is a notice, not the full CC BY 4.0 legal code
+
+- **Decision:** `release/LICENSE` contains a short CC BY 4.0 notice
+  (rights granted, the attribution condition, links to the full legal
+  text and human-readable summary) rather than reproducing the entire
+  ~400-line CC BY 4.0 legal code text, and is explicitly marked
+  "STATUS: PROPOSED."
+- **Evidence or reasoning:** This is standard practice for CC-licensed
+  datasets/repos (linking to the canonical, versioned legal text rather
+  than vendoring a copy that could drift from the authoritative source),
+  and keeps the file readable. The brief itself only says "proposed, to
+  be confirmed by the authors" for the license, which this file states
+  prominently at the top.
+- **Alternatives considered:** Embedding the full legal code text —
+  rejected as unnecessary bulk for a notice file whose job is to point to
+  the authoritative, versioned source.
+- **Risk:** None significant for a proposed/draft license notice.
+- **Confidence:** High.
+
 *(Further entries are appended in later stages as decisions come up —
 schema field choices are in `docs/SCHEMA.md`'s rationale section and
 summarised as D007+ below as validation, review and release stages are
