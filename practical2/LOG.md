@@ -168,3 +168,45 @@ UTC. Written as work happens, not reconstructed afterward.
   being set correctly (R01 for Layer-1-reviewed lug entries,
   R03/R04 for Layer-2-only entries, `reviewed_by_independent` staying
   false for Layer-2-only entries). Output discarded after inspection.
+- Committed (`819eafe`) and pushed.
+
+## 2026-09-28T13:45:00Z — Stage 4e: unit tests
+
+- Wrote `tests/conftest.py` (adds `scripts/` to `sys.path`) and five test
+  modules, all using only synthetic `TEST_*`/Unicode-escape data (no real
+  Luganda/Yoruba/English, matching `tests/fixtures/README.md`):
+  - `test_common.py` — NFC-normalises-decomposed-to-composed-without-
+    changing-meaning (decomposed vs. precomposed café-style test),
+    NFC-never-strips-combining-marks, invisible-char stripping vs.
+    combining-mark preservation, quote normalisation (curly touched,
+    phonemic modifier-apostrophe untouched), whitespace normalisation,
+    boolean parsing (including the "flase"-typo anomaly path).
+  - `test_preprocess.py` — id assignment (sequential + collision
+    avoidance), exact-duplicate removal, near-duplicate flagging
+    (similar-but-not-identical is flagged, very-different is not),
+    quote/whitespace normalisation logging, cross-file id-conflict
+    detection (using the real `tests/fixtures/raw_sample_author*.csv`
+    files), and a full end-to-end run of `preprocess.main()` against the
+    fixtures directory into a pytest `tmp_path`.
+  - `test_validate.py` — required-field/schema checks, empty/very-short
+    text, within- and cross-language duplicates, PII patterns (email,
+    Ugandan phone, Nigerian phone), translation sanity (empty/identical/
+    ratio outlier), length outliers, and the non-NFC diacritic check.
+  - `test_agreement.py` — Cohen's kappa: perfect agreement = 1.0,
+    chance-level agreement = 0.0 (hand-verified against the formula),
+    single-category-all-agree = 1.0, empty input = None.
+  - `test_corrections.py` — the `field: value` mini-syntax parser, and
+    three full `apply_corrections.main()` integration cases in
+    `tmp_path`: a Layer 2 text correction is blocked and routed to
+    conflicts (never applied), two conflicting Layer 2 metadata
+    corrections are routed to conflicts (neither applied), and a Layer 1
+    text correction IS applied and correctly sets
+    `reviewed`/`reviewed_by_independent`/`reviewer_id`.
+- Added `requirements.txt` (pytest only — the pipeline itself is stdlib).
+- Ran `python3 -m pytest tests/ -v`: 35 tests, **1 initial failure**
+  (`test_normalise_whitespace_trims_and_collapses` — the test's own
+  expected string was wrong: it expected a leading space to survive after
+  a line break, but `normalise_whitespace` correctly strips each line
+  individually, which is the intended behaviour per Stage 3's spec
+  ("trim, collapse runs of spaces, normalise line breaks"); fixed the test
+  expectation, not the implementation). Re-ran: **35/35 passed.**
