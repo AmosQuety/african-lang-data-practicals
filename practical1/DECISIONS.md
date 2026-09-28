@@ -191,4 +191,21 @@ Entries are written as decisions are made, in order.
   Medium on whether 100/proportional is the ideal QA sampling design in general — it satisfies
   the task's explicit instruction, not an independently derived power calculation.
 
-(Further entries added during Stage 5/6 as reporting decisions are made.)
+## D11: Near-duplicate detection — skipped, not "none found"
+
+- **Decision:** Did not attempt near-duplicate (fuzzy) detection beyond exact-string matching.
+- **Evidence:** None to cite — this is the point. I did not run any similarity/edit-distance/
+  n-gram-overlap check, so I have no observation to report either way. This is different from
+  D5/D6 above, where a check WAS run and found nothing.
+- **Alternatives considered:** Implementing a fuzzy-duplicate pass (e.g. normalized edit distance
+  or shared n-gram threshold). Rejected for this run because the task's Stage 3 candidate-step
+  list only specifies "removal of exact duplicate sentences," and building and tuning a
+  similarity threshold without any specific evidence of near-duplicates would be adding an
+  unrequested step without justification.
+- **Risk:** If near-duplicates exist in this corpus (plausible in news-sourced text, e.g. wire
+  reports republished with minor edits), they remain in the data and could inflate similarity
+  between train/test or train sentences beyond the exact-match cases already found and handled.
+- **Confidence:** High that this is honestly reported as "not checked" rather than misreported as
+  "none found."
+
+(Further entries added during Stage 6 as hand-off decisions are made.)

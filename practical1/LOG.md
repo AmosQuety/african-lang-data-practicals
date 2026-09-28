@@ -70,3 +70,14 @@ action as recorded by the tool environment).
   RAW data, proportional to split size (train 70, dev 10, test 20). Wrote
   `practical1/reports/manual_review_sample.csv` with `my_verdict`/`my_notes` left blank for
   the student. Recorded the allocation method as D10 in `DECISIONS.md`.
+
+### 2026-09-28 — Stage 5: Draft write-up
+- Wrote `practical1/REPORT.md` (sections 1-6) drawing all numbers directly from
+  `profile_before.json/.md`, `profile_after.json/.md`, `changes.csv`, `bio_issues.csv`, and
+  `validation.md`; cross-checked every reported figure against the JSON source files before
+  finalizing.
+- Manual-review subsection left with the required placeholder
+  `[TO BE COMPLETED BY STUDENT AFTER MANUAL REVIEW]`.
+- Recorded D11 in `DECISIONS.md`: near-duplicate detection was not attempted (explicitly
+  distinguished from D5/D6, where a check was run and returned zero results) — corrected an
+  earlier draft of REPORT.md that had implied "none found" for near-duplicates.
