@@ -15,7 +15,7 @@ only (no scipy/sklearn).
 
 **This measures agreement on the Layer 2 English-side checks (does the
 translation read sensibly, PII, metadata, formatting, flagged items) —
-NOT agreement on target-language (Luganda/Yoruba) correctness**, which
+NOT agreement on target-language (Rukiga/Yoruba) correctness**, which
 neither Layer 2 reviewer is positioned to judge (see the .NOTE.md files
 next to each sheet). That is Layer 1's job.
 
@@ -118,7 +118,7 @@ def write_report(path: Path, sheet1_path, sheet2_path, overlap_total, completed,
         "**Scope note:** this measures agreement between the two authors' "
         "Layer 2 English-side checks (translation readability, PII, "
         "metadata, formatting, flagged items) on the shared overlap set. "
-        "It does **not** measure agreement on target-language (Luganda/"
+        "It does **not** measure agreement on target-language (Rukiga/"
         "Yoruba) correctness — neither Layer 2 reviewer reads the other's "
         "language. Target-language correctness is Layer 1's job."
     )

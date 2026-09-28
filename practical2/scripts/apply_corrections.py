@@ -6,7 +6,7 @@ Usage:
         [--out PATH] [--log PATH] [--conflicts PATH]
 
 Reads data/processed/dataset.jsonl plus the four completed review sheets
-(reports/review/layer1_lug.csv, layer1_yor.csv, layer2_by_author1.csv,
+(reports/review/layer1_cgg.csv, layer1_yor.csv, layer2_by_author1.csv,
 layer2_by_author2.csv) and applies each row's `reviewer_correction` to
 produce a corrected dataset.
 
@@ -15,7 +15,8 @@ reviewer_correction format (see DECISIONS.md D020): one or more
     translation_en: A better English translation
     text: Fixed original text | domain: proverb
 Recognised fields: text, translation_en, contributor_id, region, dialect,
-date_collected, source_type, domain. (id, language, reviewed*, reviewer_id
+date_collected, source_type, domain, source_url, site_name, retrieved_date,
+source_license, translation_source. (id, language, reviewed*, reviewer_id
 are never editable this way.)
 
 Rules (see DECISIONS.md D020-D022):
@@ -48,11 +49,13 @@ import common  # noqa: E402
 EDITABLE_FIELDS = {
     "text", "translation_en", "contributor_id", "region", "dialect",
     "date_collected", "source_type", "domain",
+    # Added 2026-09-29 alongside web-scraping support (DECISIONS.md D026/D027)
+    "source_url", "site_name", "retrieved_date", "source_license", "translation_source",
 }
 
 # Default reviewer codes per docs/TEAM_PLAN.md, used only to populate the
 # reviewer_id field on entries a given sheet marks reviewed (see D022).
-LAYER1_REVIEWER_CODE = {"lug": "R01", "yor": "R02"}
+LAYER1_REVIEWER_CODE = {"cgg": "R01", "yor": "R02"}
 LAYER2_REVIEWER_CODE = {"layer2_by_author1": "R03", "layer2_by_author2": "R04"}
 
 
@@ -97,11 +100,11 @@ def main() -> int:
     by_id = {r["id"]: r for r in rows}
 
     sheets = {
-        "layer1_lug": (args.review_dir / "layer1_lug.csv", "layer1"),
-        "layer1_yor": (args.review_dir / "layer1_yor.csv", "layer1"),
-        "layer2_by_author1": (args.review_dir / "layer2_by_author1.csv", "layer2"),
-        "layer2_by_author2": (args.review_dir / "layer2_by_author2.csv", "layer2"),
+        f"layer1_{lang}": (args.review_dir / f"layer1_{lang}.csv", "layer1")
+        for lang in common.LANGUAGES
     }
+    sheets["layer2_by_author1"] = (args.review_dir / "layer2_by_author1.csv", "layer2")
+    sheets["layer2_by_author2"] = (args.review_dir / "layer2_by_author2.csv", "layer2")
 
     # proposals[(id, field)] = list of (value, source_sheet_name, layer)
     proposals: dict[tuple[str, str], list[tuple[str, str, str]]] = defaultdict(list)

@@ -30,7 +30,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     base = Path(__file__).resolve().parent.parent
     parser.add_argument("--repo-id", required=True,
-                         help="Hugging Face dataset repo id, e.g. 'amosnabasa/luganda-yoruba-short-text'")
+                         help="Hugging Face dataset repo id, e.g. 'amosnabasa/rukiga-yoruba-short-text'")
     parser.add_argument("--release-dir", type=Path, default=base / "release")
     parser.add_argument("--private", action="store_true", help="Create/update the repo as private.")
     parser.add_argument("--commit-message", default="Upload dataset release")

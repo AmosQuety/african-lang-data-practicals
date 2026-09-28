@@ -16,7 +16,9 @@ cell" quick reference.
 3. When you export back to CSV, keep UTF-8 encoding (Google Sheets does
    this by default; in Excel use "CSV UTF-8").
 4. Save your file as `data/raw/raw_<language>_<author>.csv`, e.g.
-   `data/raw/raw_lug_author1.csv`.
+   `data/raw/raw_cgg_author1.csv`. (Web-scraped entries go in a separate
+   file, `data/raw/raw_<language>_scraped.csv`, produced by
+   `scripts/scrape_source.py` — this guide is for hand-collected entries.)
 
 ## Using a Google Form
 
@@ -29,23 +31,24 @@ with the same column order.
 | Column | What to put | Example |
 |---|---|---|
 | `id` | **Leave blank.** Assigned automatically. | *(blank)* |
-| `language` | `lug` for Luganda entries, `yor` for Yoruba entries. Lowercase, exactly as shown. | `lug` |
-| `text` | The sentence, proverb, or short phrase in the original language, typed as you would normally write it (keep any diacritics/tone marks — do not remove or "correct" them). | `Akola ekyalo, akyalira mu maaso.` |
+| `language` | `cgg` for Rukiga entries, `yor` for Yoruba entries. Lowercase, exactly as shown. | `cgg` |
+| `text` | The sentence, proverb, or short phrase in the original language, typed as you would normally write it (keep any diacritics/tone marks — do not remove or "correct" them). | *(a genuine Rukiga or Yoruba sentence you wrote/collected — this guide won't invent an example here, since getting it linguistically wrong would be worse than no example)* |
 | `translation_en` | An English translation that captures the **meaning**, not a word-for-word translation. If it's a proverb with no direct English equivalent, translate the meaning/sense and you may add a short bracketed note. **Required — never leave blank.** | `He who visits the village, benefits from it later.` |
-| `contributor_id` | The anonymous code assigned to the contributor (see COLLECTION_PROTOCOL.md), e.g. `C001`. **Never a name.** | `C001` |
-| `region` | Region/locality, if the contributor is comfortable sharing it (optional, free text). | `Central Uganda` |
+| `contributor_id` | The anonymous code assigned to the contributor (see COLLECTION_PROTOCOL.md), e.g. `C001`. **Never a name.** Leave blank only for a `web-scraped` row. | `C001` |
+| `region` | Region/locality, if the contributor is comfortable sharing it (optional, free text). | `Kigezi` (for Rukiga) / a Nigerian region (for Yoruba) |
 | `dialect` | Dialect, if known (optional). | *(leave blank if unsure)* |
 | `date_collected` | Month you collected it, `YYYY-MM`. | `2026-10` |
-| `source_type` | One of: `self-written`, `volunteer-contributed`, `proverb`, `other`. | `proverb` |
+| `source_type` | One of: `self-written`, `volunteer-contributed`, `proverb`, `other`. (`web-scraped` is set automatically by `scripts/scrape_source.py` — not used for hand-filled rows.) | `proverb` |
 | `domain` | A short topic tag if one comes to mind (optional): `greeting`, `proverb`, `daily-life`, `family`, etc. | `proverb` |
 | `reviewed` | Leave blank / `FALSE` at collection time. Filled in later during review. | *(blank)* |
 | `reviewer_id` | Leave blank at collection time. | *(blank)* |
 | `reviewed_by_independent` | Leave blank / `FALSE` at collection time. | *(blank)* |
+| `source_url`, `site_name`, `retrieved_date`, `source_license`, `translation_source` | **Leave all five blank** for hand-collected entries — these only apply to web-scraped rows, which `scripts/scrape_source.py` fills in automatically. | *(blank)* |
 
 ## Before you submit a batch
 
 - Check `text` and `translation_en` are both filled for every row.
-- Check `language` is exactly `lug` or `yor` (not "Luganda"/"Yoruba").
+- Check `language` is exactly `cgg` or `yor` (not "Rukiga"/"Yoruba").
 - Do not include names, phone numbers, addresses, or other personal
   identifiers anywhere in `text`, `translation_en`, `region`, `dialect`, or
   `domain` — see COLLECTION_PROTOCOL.md for what to avoid.

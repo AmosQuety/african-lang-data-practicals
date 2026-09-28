@@ -5,7 +5,7 @@ Usage:
     python3 scripts/validate_auto.py [--dataset PATH] [--reports-dir REPORTS]
 
 Every check is heuristic-assisted, not a verdict — this script cannot read
-Luganda or Yoruba, so anything beyond schema/format checks is a flag for a
+Rukiga or Yoruba, so anything beyond schema/format checks is a flag for a
 human reviewer, not a fact. See reports/validation.md's "Limitations"
 section, written by this script every run, for what each check can and
 cannot actually tell you.
@@ -44,7 +44,7 @@ TRANSLATION_RATIO_MIN = 0.15   # D011: translation/source length ratio outlier b
 TRANSLATION_RATIO_MAX = 6.0
 
 # A small, deliberately generic set of very common English function words.
-# This is NOT a claim about Luganda/Yoruba vocabulary — see limitations.
+# This is NOT a claim about Rukiga/Yoruba vocabulary — see limitations.
 COMMON_ENGLISH_WORDS = {
     "the", "a", "an", "is", "are", "was", "were", "of", "to", "in", "on",
     "and", "or", "but", "with", "for", "this", "that", "it", "as", "at",
@@ -89,15 +89,36 @@ def by_language(rows: list[dict]) -> dict[str, list[dict]]:
 
 
 def check_schema_and_required(rows: list[dict]) -> list[dict]:
+    """See DECISIONS.md D027 for the source_type-conditional required-field
+    logic: contributor_id is required for human-collected source_types but
+    may be "N/A" for "web-scraped"; the five source-provenance fields
+    (source_url, site_name, retrieved_date, source_license,
+    translation_source) are required only for "web-scraped" rows."""
     flags = []
     for row in rows:
         rid, lang = row.get("id", ""), row.get("language", "")
+        src = row.get("source_type") or ""
+        is_web_scraped = src == "web-scraped"
+
         for field in common.REQUIRED_FIELDS:
+            if field == "contributor_id" and is_web_scraped:
+                continue  # optional ("N/A") for web-scraped rows — see DECISIONS.md D027
+            if field in common.BOOLEAN_FIELDS:
+                continue  # booleans are never "missing" — False is valid
             if field not in row or row.get(field) in (None, ""):
-                if field in common.BOOLEAN_FIELDS:
-                    continue  # booleans are never "missing" — False is valid
                 flags.append({"id": rid, "language": lang, "check": "required_field_missing",
                               "detail": f"'{field}' is empty or missing"})
+
+        if is_web_scraped:
+            for field in common.WEB_SCRAPE_REQUIRED_FIELDS:
+                if field not in row or row.get(field) in (None, ""):
+                    flags.append({"id": rid, "language": lang, "check": "required_field_missing",
+                                  "detail": f"'{field}' is empty or missing (required for source_type=web-scraped)"})
+            translation_source = row.get("translation_source") or ""
+            if translation_source and translation_source not in common.TRANSLATION_SOURCES:
+                flags.append({"id": rid, "language": lang, "check": "schema_translation_source_invalid",
+                              "detail": f"translation_source '{translation_source}' not in {common.TRANSLATION_SOURCES}"})
+
         if lang and lang not in common.LANGUAGES:
             flags.append({"id": rid, "language": lang, "check": "schema_language_invalid",
                           "detail": f"language '{lang}' is not one of {common.LANGUAGES}"})
@@ -105,7 +126,7 @@ def check_schema_and_required(rows: list[dict]) -> list[dict]:
             flags.append({"id": rid, "language": lang, "check": "schema_id_format",
                           "detail": f"id '{row['id']}' does not match ^[a-z]{{3}}-[0-9]{{4,}}$"})
         cid = row.get("contributor_id") or ""
-        if cid and not common.CONTRIBUTOR_ID_PATTERN.match(cid):
+        if cid and cid != common.CONTRIBUTOR_ID_NA and not common.CONTRIBUTOR_ID_PATTERN.match(cid):
             flags.append({"id": rid, "language": lang, "check": "schema_contributor_id_format",
                           "detail": f"contributor_id '{cid}' does not match ^C[0-9]{{3,}}$"})
         rev_id = row.get("reviewer_id")
@@ -156,7 +177,7 @@ def check_duplicates_within_language(rows: list[dict]) -> list[dict]:
 
 def check_duplicates_across_languages(rows: list[dict]) -> list[dict]:
     """Same text appearing under two different language labels — likely a
-    mislabel, since Luganda and Yoruba text should essentially never be
+    mislabel, since Rukiga and Yoruba text should essentially never be
     identical strings by chance for anything but the shortest tokens."""
     flags = []
     seen: dict[str, tuple[str, str]] = {}  # text -> (id, language)
@@ -272,7 +293,7 @@ def check_metadata_consistency(rows: list[dict]) -> list[dict]:
 
 def check_language_label_sanity(rows_by_lang: dict[str, list[dict]]) -> list[dict]:
     """Heuristic only — both languages use Latin script, so this cannot
-    reliably tell Luganda from Yoruba. It can only flag entries that look
+    reliably tell Rukiga from Yoruba. It can only flag entries that look
     unusually like English, or whose character profile is closer to the
     OTHER language's profile than to its own, built from this dataset."""
     flags = []
@@ -331,7 +352,7 @@ def check_diacritic_consistency(rows_by_lang: dict[str, list[dict]]) -> tuple[li
                 flags.append({"id": rid, "language": lang, "check": "non_nfc_text",
                               "detail": "text is not in NFC form (contains a decomposed sequence NFC would change)"})
             has_combining = any(unicodedata.category(ch) in ("Mn", "Mc") for ch in text)
-            has_tone = any(ch in YORUBA_TONE_MARK_CHARS for ch in text) or has_combining and lang == "lug"
+            has_tone = any(ch in YORUBA_TONE_MARK_CHARS for ch in text)
             has_subdot = any(ch in YORUBA_SUBDOT_CHARS for ch in text)
             if has_tone or has_subdot or has_combining:
                 with_marks += 1
@@ -468,7 +489,7 @@ def write_validation_md(path: Path, rows, rows_by_lang, all_flags, pii_flags, di
     lines.append("")
     lines.append(
         "- **Language-label sanity** (`language_looks_like_english`, "
-        "`language_looks_like_other_language`): both Luganda and Yoruba use "
+        "`language_looks_like_other_language`): both Rukiga and Yoruba use "
         "Latin script, so this cannot be verified by script alone — the "
         "check only compares an entry's characters/words against this "
         "dataset's own character profile and a generic list of common "
@@ -476,7 +497,7 @@ def write_validation_md(path: Path, rows, rows_by_lang, all_flags, pii_flags, di
         "verdict, and can both over- and under-flag."
     )
     lines.append(
-        "- **Personal-name detection**: Yoruba and Luganda personal names "
+        "- **Personal-name detection**: Yoruba and Rukiga personal names "
         "cannot be reliably detected automatically. The `capitalised_token` "
         "PII hint only flags a capitalised word that isn't at the start of "
         "the text — most such flags will be false positives (proper nouns, "

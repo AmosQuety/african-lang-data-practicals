@@ -1,15 +1,17 @@
 # Practical 2: Data Preparation
 
-Original bilingual (Luganda + Yoruba) short-text dataset with English
+Original bilingual (Rukiga + Yoruba) short-text dataset with English
 translations: collection → preprocessing → validation → two-layer human
 review → dataset card → release packaging.
 
 > **This repo builds everything *around* the real data.** The two authors
 > (Nabasa Amos and Jesulewami Kupoluyi) collect data by hand — with real
-> contributors, consent, and their own credentials — and do the final
-> upload themselves. This pipeline never invents, scrapes, or generates
-> data, and never uploads anything (see `DEFINITION OF DONE` at the
-> bottom and `LOG.md` for what was actually run and when).
+> contributors, consent, and their own credentials — or, as of 2026-09-29
+> (see `DECISIONS.md` D026), source it by scraping openly-licensed
+> websites with attribution, using `scripts/scrape_source.py`. Either way
+> this pipeline never invents data, and never uploads anything (see
+> `DEFINITION OF DONE` at the bottom and `LOG.md` for what was actually
+> run and when).
 
 ## Layout
 
@@ -53,8 +55,9 @@ python3 -m pytest tests/          # 35 tests, should all pass
 
 Once both authors have collected data (see `docs/COLLECTION_PROTOCOL.md`
 and `docs/FILLING_GUIDE.md`) and placed their CSV file(s) in
-`data/raw/` (e.g. `data/raw/raw_lug_author1.csv`,
-`data/raw/raw_yor_author2.csv`):
+`data/raw/` (e.g. `data/raw/raw_cgg_author1.csv`,
+`data/raw/raw_yor_author2.csv`; web-scraped entries go in separate
+`data/raw/raw_<lang>_scraped.csv` files — see `scripts/scrape_source.py`):
 
 ```bash
 # 1. Combine + clean raw CSVs -> data/processed/dataset.jsonl
@@ -106,8 +109,11 @@ This pipeline cannot do any of the following — they involve real people,
 consent, and our own credentials:
 
 - [ ] Recruit contributors, obtain and record consent (`docs/CONSENT_FORM.md`,
-      `docs/COLLECTION_PROTOCOL.md`) — **Author 1: Luganda, Author 2: Yoruba**
-- [ ] Actually collect 150-250 entries per language and fill in the raw
+      `docs/COLLECTION_PROTOCOL.md`) — **Author 1: Rukiga, Author 2: Yoruba**
+      (human collection); or source via approved web-scraping
+      (`docs/COLLECTION_PROTOCOL.md`'s scraping note, `DECISIONS.md` D026)
+- [ ] Actually collect ~150-250 entries per language (target, not a hard
+      requirement — see `DECISIONS.md` D026/D027) and fill in the raw
       CSVs (`docs/FILLING_GUIDE.md`)
 - [ ] Recruit an independent fluent-speaker reviewer per language (Layer 1)
       — see `docs/TEAM_PLAN.md`; if none is found, that's OK, but it must

@@ -8,7 +8,7 @@ from conftest import FIXTURES_DIR
 
 def make_row(**kwargs):
     base = {
-        "id": "", "language": "lug", "text": "TEST placeholder", "translation_en": "TEST placeholder en",
+        "id": "", "language": "cgg", "text": "TEST placeholder", "translation_en": "TEST placeholder en",
         "contributor_id": "C001", "region": "", "dialect": "", "date_collected": "2026-01",
         "source_type": "self-written", "domain": "test", "reviewed": "", "reviewer_id": "",
         "reviewed_by_independent": "", "_source_file": "test.csv",
@@ -18,61 +18,61 @@ def make_row(**kwargs):
 
 
 def test_assign_ids_sequential_per_language():
-    rows = [common.record_to_schema(make_row(language="lug")) for _ in range(3)]
+    rows = [common.record_to_schema(make_row(language="cgg")) for _ in range(3)]
     rows += [common.record_to_schema(make_row(language="yor")) for _ in range(2)]
     for r, src in zip(rows, ["a"] * 3 + ["b"] * 2):
         r["_source_file"] = src
     preprocess.assign_ids(rows)
-    lug_ids = [r["id"] for r in rows if r["language"] == "lug"]
+    cgg_ids = [r["id"] for r in rows if r["language"] == "cgg"]
     yor_ids = [r["id"] for r in rows if r["language"] == "yor"]
-    assert lug_ids == ["lug-0001", "lug-0002", "lug-0003"]
+    assert cgg_ids == ["cgg-0001", "cgg-0002", "cgg-0003"]
     assert yor_ids == ["yor-0001", "yor-0002"]
 
 
 def test_assign_ids_preserves_existing_valid_id_and_avoids_collision():
     rows = [
-        common.record_to_schema(make_row(id="lug-0005", language="lug")),
-        common.record_to_schema(make_row(language="lug")),  # should NOT become lug-0001, must avoid 0005
+        common.record_to_schema(make_row(id="cgg-0005", language="cgg")),
+        common.record_to_schema(make_row(language="cgg")),  # should NOT become cgg-0001, must avoid 0005
     ]
     preprocess.assign_ids(rows)
-    assert rows[0]["id"] == "lug-0005"
-    assert rows[1]["id"] == "lug-0006"
+    assert rows[0]["id"] == "cgg-0005"
+    assert rows[1]["id"] == "cgg-0006"
 
 
 def test_remove_exact_duplicates_keeps_first_and_logs_rest():
     rows = [
-        common.record_to_schema(make_row(id="lug-0001", language="lug", text="TEST_DUP same text")),
-        common.record_to_schema(make_row(id="lug-0002", language="lug", text="TEST_DUP same text")),
-        common.record_to_schema(make_row(id="lug-0003", language="lug", text="TEST_DUP different text")),
+        common.record_to_schema(make_row(id="cgg-0001", language="cgg", text="TEST_DUP same text")),
+        common.record_to_schema(make_row(id="cgg-0002", language="cgg", text="TEST_DUP same text")),
+        common.record_to_schema(make_row(id="cgg-0003", language="cgg", text="TEST_DUP different text")),
     ]
     kept, removed = preprocess.remove_exact_duplicates(rows)
-    assert [r["id"] for r in kept] == ["lug-0001", "lug-0003"]
+    assert [r["id"] for r in kept] == ["cgg-0001", "cgg-0003"]
     assert len(removed) == 1
-    assert removed[0]["id"] == "lug-0002"
-    assert removed[0]["duplicate_of_id"] == "lug-0001"
+    assert removed[0]["id"] == "cgg-0002"
+    assert removed[0]["duplicate_of_id"] == "cgg-0001"
 
 
 def test_flag_near_duplicates_detects_similar_not_identical_text():
     rows = [
-        common.record_to_schema(make_row(id="lug-0001", language="lug", text="TEST_NEARDUP aaaaaaaaaa")),
-        common.record_to_schema(make_row(id="lug-0002", language="lug", text="TEST_NEARDUP aaaaaaaaab")),  # 1 char different, high similarity
-        common.record_to_schema(make_row(id="lug-0003", language="lug", text="TEST_NEARDUP completely_different_zzzzz")),
+        common.record_to_schema(make_row(id="cgg-0001", language="cgg", text="TEST_NEARDUP aaaaaaaaaa")),
+        common.record_to_schema(make_row(id="cgg-0002", language="cgg", text="TEST_NEARDUP aaaaaaaaab")),  # 1 char different, high similarity
+        common.record_to_schema(make_row(id="cgg-0003", language="cgg", text="TEST_NEARDUP completely_different_zzzzz")),
     ]
     flags = preprocess.flag_near_duplicates(rows)
     flagged_pairs = {(f["id_a"], f["id_b"]) for f in flags}
-    assert ("lug-0001", "lug-0002") in flagged_pairs
-    assert not any("lug-0003" in pair for pair in flagged_pairs)
+    assert ("cgg-0001", "cgg-0002") in flagged_pairs
+    assert not any("cgg-0003" in pair for pair in flagged_pairs)
 
 
 def test_normalise_rows_applies_quote_and_whitespace_cleanup_and_logs_changes():
     rows = [common.record_to_schema(make_row(
-        id="lug-0001", language="lug",
+        id="cgg-0001", language="cgg",
         text="  TEST_NORM ‘quoted’  text  ",
         translation_en="TEST_NORM en",
     ))]
     normalised, changes = preprocess.normalise_rows(rows)
     assert normalised[0]["text"] == "TEST_NORM 'quoted' text"
-    steps = {c["step"] for c in changes if c["id"] == "lug-0001" and c["field"] == "text"}
+    steps = {c["step"] for c in changes if c["id"] == "cgg-0001" and c["field"] == "text"}
     assert "whitespace" in steps
     assert "quotes" in steps
 
@@ -114,7 +114,7 @@ def test_full_preprocess_pipeline_end_to_end(tmp_path):
     rows = common.read_jsonl(dataset_path)
     assert len(rows) > 0
     for row in rows:
-        assert row["language"] in ("lug", "yor")
+        assert row["language"] in ("cgg", "yor")
         assert row["id"]
     assert (reports_dir / "preprocess_summary.md").exists()
     assert (reports_dir / "duplicates_removed.csv").exists()

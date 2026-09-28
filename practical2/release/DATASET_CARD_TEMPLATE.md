@@ -1,6 +1,6 @@
 ---
 language:
-  - lug
+  - cgg
   - yor
 license: cc-by-4.0
 license_name: "Creative Commons Attribution 4.0 International (proposed — to be confirmed by the authors)"
@@ -25,13 +25,15 @@ size_categories:
 ## Dataset summary
 
 [FILL IN — 2-3 sentences: what this dataset is, the two languages, that it
-pairs short Luganda and Yoruba text with English translations, and why it
+pairs short Rukiga and Yoruba text with English translations, and why it
 was created (university course assignment producing an original
-bilingual text dataset).]
+bilingual text dataset, sourced from a mix of consented human collection
+and openly-licensed web sources — see "How the data was collected"
+below).]
 
 ## Languages and dialects
 
-- **Luganda** (`lug`) — [FILL IN: dialect(s) represented, region(s), entry
+- **Rukiga** (`cgg`) — [FILL IN: dialect(s) represented, region(s), entry
   count]
 - **Yoruba** (`yor`) — [FILL IN: dialect(s) represented, region(s), entry
   count]
@@ -46,37 +48,60 @@ One row per entry. Full schema: `practical2/docs/SCHEMA.md` /
 
 | Field | Description |
 |---|---|
-| `id` | Unique entry id, e.g. `lug-0001` |
-| `language` | ISO 639-3 code: `lug` or `yor` |
+| `id` | Unique entry id, e.g. `cgg-0001` |
+| `language` | ISO 639-3 code: `cgg` or `yor` |
 | `text` | Original-language text |
 | `translation_en` | English translation (required) |
-| `contributor_id` | Anonymous contributor code, never a real name |
+| `contributor_id` | Anonymous contributor code, never a real name (`N/A` for web-scraped entries — see below) |
 | `region` | Region/locality (optional) |
 | `dialect` | Dialect (optional) |
-| `date_collected` | `YYYY-MM` (optional) |
-| `source_type` | `self-written` / `volunteer-contributed` / `proverb` / `other` |
+| `date_collected` | `YYYY-MM` (optional, human-collected entries) |
+| `source_type` | `self-written` / `volunteer-contributed` / `proverb` / `other` / `web-scraped` |
 | `domain` | Topic tag (optional) |
 | `reviewed` | Whether any review layer looked at this entry |
 | `reviewer_id` | Anonymous reviewer code, or blank |
 | `reviewed_by_independent` | True only if reviewed by a fluent speaker who did NOT collect the entry |
+| `source_url`, `site_name`, `retrieved_date`, `source_license`, `translation_source` | Required for `source_type=web-scraped`: exactly where the entry came from, when it was fetched, its license, and whether the English translation is the source site's own (`site`) or machine-translated (`machine`) |
 
-Two per-language configs (`lug`, `yor`) plus a combined view are provided
+Two per-language configs (`cgg`, `yor`) plus a combined view are provided
 — see `docs/UPLOAD_GUIDE.md` for how these map to Hugging Face configs.
 
 ## How the data was collected
 
-[FILL IN: who collected it (anonymised — refer to "two student
-collectors," not names, unless the authors decide otherwise — see
-docs/TEAM_PLAN.md's CONTRIBUTIONS template), how many contributors per
-language, what venues/contexts, over what time period. Summarise
-`docs/COLLECTION_PROTOCOL.md` rather than duplicating it.]
+This dataset combines two sourcing methods:
+
+1. **Consented human collection** — entries with `source_type` in
+   `self-written`/`volunteer-contributed`/`proverb`/`other`. [FILL IN: who
+   collected it (anonymised — refer to "two student collectors," not
+   names, unless the authors decide otherwise — see docs/TEAM_PLAN.md's
+   CONTRIBUTIONS template), how many contributors per language, what
+   venues/contexts, over what time period. Summarise
+   `docs/COLLECTION_PROTOCOL.md` rather than duplicating it.]
+2. **Web-scraping from openly-licensed sources** — entries with
+   `source_type=web-scraped`, permitted by the course lecturer as an
+   alternative given time constraints (see `DECISIONS.md` D026).
+   [FILL IN: `scripts/scrape_source.py`'s method summary and the **Sources
+   and credits** subsection below, once populated.]
+
+### Sources and credits (web-scraped entries)
+
+[FILL IN once scraping is complete — one entry per site actually used, in
+this form: site name, source URL pattern, license, and roughly how many
+entries came from it. Example shape (delete once real credits are
+filled in):
+`[FILL IN site_name] — [FILL IN source URL pattern] — [FILL IN license] —
+[FILL IN entry count]`.]
 
 ## Consent and ethics
 
-All contributors gave informed consent (see `docs/CONSENT_FORM.md`,
-explained to each contributor in their own language before they
-contributed) to their text being published openly under the license
-below, with no personal identifying information retained. See
+Human-collected contributors gave informed consent (see
+`docs/CONSENT_FORM.md`, explained to each contributor in their own
+language before they contributed) to their text being published openly
+under the license below, with no personal identifying information
+retained. Web-scraped entries carry no personal data by construction (see
+`docs/COLLECTION_PROTOCOL.md`'s note on the scraping path and
+`scripts/scrape_source.py`'s PII-stripping step) and are credited to
+their source site and license instead of a consent record. See
 `docs/ETHICS_CHECKLIST.md` for the pre-release checklist this dataset was
 checked against.
 
@@ -130,7 +155,7 @@ Cohen's kappa. [FILL IN: `reports/agreement.md` numbers.]
 ## Intended uses
 
 [FILL IN, but suggested starting points: NLP research and tool
-development for Luganda and Yoruba (e.g. as seed/evaluation data for
+development for Rukiga and Yoruba (e.g. as seed/evaluation data for
 translation, language identification, or text-normalisation tools);
 educational use; linguistic study of proverbs/short-form text in these
 languages.]
@@ -140,7 +165,7 @@ languages.]
 This dataset is small (150-250 entries/language target) and was collected
 by two individuals from a limited contributor pool — **it is not
 representative of either language as a whole** and should not be used to
-make broad claims about Luganda or Yoruba speakers, dialects not
+make broad claims about Rukiga or Yoruba speakers, dialects not
 represented here, or used as a sole training source for a production
 system without awareness of these limits.
 

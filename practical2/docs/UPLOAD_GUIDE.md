@@ -37,7 +37,7 @@ cleanly and both authors have gone through `docs/ETHICS_CHECKLIST.md`.
    YAML front matter in `release/README.md` drives the "Languages",
    "License" etc. metadata badges; make sure they rendered as expected.
 6. **Configs:** this release ships `dataset.jsonl`/`.csv` (combined) plus
-   `lug/dataset_lug.jsonl` and `yor/dataset_yor.jsonl` (per-language). If
+   `cgg/dataset_cgg.jsonl` and `yor/dataset_yor.jsonl` (per-language). If
    you want these to appear as separate selectable "configs" in the HF
    dataset viewer, add a `configs:` section to the YAML front matter
    pointing at each file (see Hugging Face's "Manual configuration" docs)

@@ -25,7 +25,7 @@ LAYER 2 (cross-review between the two authors, English-side only):
 --contributor-map PATH: optional CSV with columns contributor_id,author
 mapping each contributor_id to 'author1' or 'author2'. If omitted, this
 script falls back to the project's default assignment (Author 1 collects
-Luganda, Author 2 collects Yoruba — see docs/TEAM_PLAN.md), which is
+Rukiga, Author 2 collects Yoruba — see docs/TEAM_PLAN.md), which is
 correct for the two-author/two-language design in this repo but would
 need a real mapping if that assumption ever changes. This path is never
 committed (see .gitignore's '*contributor_map*' pattern).
@@ -109,9 +109,9 @@ def load_contributor_map(path: Path | None) -> dict[str, str] | None:
 
 
 def default_author_for_language(lang: str) -> str | None:
-    # Project default (docs/TEAM_PLAN.md): Author 1 collects Luganda,
+    # Project default (docs/TEAM_PLAN.md): Author 1 collects Rukiga,
     # Author 2 collects Yoruba.
-    return {"lug": "author1", "yor": "author2"}.get(lang)
+    return {"cgg": "author1", "yor": "author2"}.get(lang)
 
 
 def assign_authors(rows: list[dict], contributor_map: dict[str, str] | None) -> dict[str, str]:
@@ -223,7 +223,7 @@ def main() -> int:
     sheet1, sheet2, overlap_ids = build_layer2_sheets(rows, flags_by_id, author_of, overlap_rows)
 
     layer2_note_common = (
-        "**This layer does NOT verify target-language (Luganda/Yoruba) "
+        "**This layer does NOT verify target-language (Rukiga/Yoruba) "
         "correctness.** The reviewing author does not read the other "
         "author's language. Only check: (1) does the English translation "
         "read sensibly on its own, (2) any possible PII, (3) metadata "
@@ -288,7 +288,7 @@ def build_readme(rows_by_lang, layer1_sheets, sheet1, sheet2, overlap_ids, used_
     if not used_real_map:
         lines.append("")
         lines.append("**Note:** no `--contributor-map` was supplied, so author assignment used the "
-                      "project default (Author 1 = Luganda collector, Author 2 = Yoruba collector, "
+                      "project default (Author 1 = Rukiga collector, Author 2 = Yoruba collector, "
                       "per docs/TEAM_PLAN.md). Pass `--contributor-map path/to/local/file.csv` "
                       "(never committed) if contributors ever span both languages/authors.")
     lines.append("")

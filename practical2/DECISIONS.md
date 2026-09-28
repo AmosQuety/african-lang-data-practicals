@@ -612,3 +612,101 @@ this assistant's confidence, for the authors to check.
 schema field choices are in `docs/SCHEMA.md`'s rationale section and
 summarised as D007+ below as validation, review and release stages are
 built.)*
+
+### D026 — Scope change: web-scraping permitted alongside human collection
+
+- **Decision:** As of 2026-09-29, entries may be sourced either by the
+  original consented human-collection path (unchanged, still fully
+  valid) or by scraping short, self-contained text units from a fixed,
+  pre-approved list of openly-licensed websites, with source attribution
+  recorded per entry. This is additive to Stages 1-6, not a replacement
+  or restart of the collection design.
+- **Evidence or reasoning:** The course lecturer explicitly permitted
+  web-scraping from openly-licensed sites (crediting the source) as an
+  alternative given time constraints. The pre-approved source list is
+  fixed by that instruction and is not to be deviated from or
+  re-researched: `africanstorybook.org` (CC BY 4.0 per story) and
+  `global-asp.github.io/storybooks-uganda` for Rukiga and Yoruba, plus
+  `yo.wikipedia.org`'s official MediaWiki REST API (CC BY-SA 4.0) as a
+  Yoruba-only backup. MasakhaNER-derived data and any copyrighted news
+  source (even with credit) are explicitly excluded — MasakhaNER is used
+  elsewhere in the course already, and news-site copyright status is not
+  the "openly-licensed" the lecturer authorised.
+- **Schema consequence:** `source_type` gains a `"web-scraped"` value.
+  Five new fields (`source_url`, `site_name`, `retrieved_date`,
+  `source_license`, `translation_source`) become **required** for
+  web-scraped rows and stay blank/`N/A` for human-collected rows, so the
+  scraped rows carry exactly the attribution the license requires.
+  `contributor_id` becomes optional (`"N/A"`) for web-scraped rows
+  specifically, since there is no human contributor to anonymise — it
+  stays required, unchanged, for every human-collected `source_type`.
+  Full field-level rationale is in `docs/SCHEMA.md`'s "Why these fields"
+  section.
+- **Alternatives considered:** Keeping human collection as the only path
+  and accepting a smaller dataset if collection ran short — rejected
+  because the lecturer's permission was explicit and time-boxed, and a
+  disclosed, honestly-sourced scraped supplement is preferable to an
+  undersized or rushed human-collection dataset. Scraping without
+  recording per-entry source/license metadata — rejected outright, it
+  would make attribution (the actual condition of an open license)
+  unverifiable per row.
+- **Risk:** Scraped text may need more careful language-identity
+  verification than collected text, since nobody personally vouches for
+  it the way a human contributor does — mitigated by the volume-estimate
+  and language-verification step recorded in `LOG.md` before any bulk
+  scraping, and by the small-batch self-check gate (`LOG.md`) before
+  scaling to the full target.
+- **Confidence:** High that this correctly implements the lecturer's
+  instruction; medium on final scraped volume, which depends on real
+  source content and is disclosed honestly rather than assumed.
+
+### D027 — Language change: Luganda → Rukiga (`cgg`) for Author 1
+
+- **Decision:** Author 1's language changes from Luganda to Rukiga
+  (`cgg`) for the remainder of the project. Author 2 (Yoruba) is
+  unchanged. This is a correction to the project's starting
+  configuration (Stages 1-6), not a full restart — schema, ethics docs,
+  preprocessing, validation, review-system, and dataset-card-template
+  work already done for the two-language design carries forward
+  unchanged in structure, only the language code/name itself is swapped
+  throughout (`scripts/common.py`'s `LANGUAGES`/`LANGUAGE_NAMES`, docs,
+  templates, tests).
+- **Evidence or reasoning:** Author 1 is a native Rukiga speaker, which
+  was not the case for Luganda. This directly fixes the single biggest
+  structural weakness flagged throughout this project's own
+  `DECISIONS.md` and `VIVA_NOTES.md` up to this point: that **neither
+  author was fluent in either target language**, which is why so many
+  validation checks are explicitly documented as non-authoritative
+  heuristics (D014, and the "Why validation designed this way" viva
+  note). With Author 1 now a native Rukiga speaker, they can (a)
+  genuinely verify that candidate text is actually Rukiga rather than
+  trusting an external label — a real, concrete example of why this
+  matters: a language-labelled candidate source was checked and found to
+  actually be Dutch, which a non-speaker would not have caught — and (b)
+  recruit an independent fluent Rukiga reviewer for Layer 1 review, which
+  was not achievable for Luganda.
+- **Alternatives considered:** Keeping Luganda and simply accepting that
+  neither author could verify it — rejected now that a same-project
+  alternative (Rukiga) removes that limitation entirely for one of the
+  two languages, at essentially no structural cost since the pipeline
+  was already language-parametrised. Substituting a third, different
+  language instead of Rukiga — not considered; Rukiga was the specific
+  language named in the instruction and matches Author 1's actual
+  fluency.
+- **Disclosed limitation carried forward:** Rukiga has no Wikipedia or
+  Wiktionary backup source (both checked and confirmed absent/empty for
+  Rukiga, unlike Yoruba's Wikipedia REST API backup), so its approved
+  source list for web-scraping (D026) is narrower than Yoruba's. If
+  realistic volume for Rukiga falls short of the ~150-250 entry target,
+  that is disclosed plainly in `LOG.md` and the dataset card rather than
+  masked by substituting a different language or inflating the count.
+- **Risk:** All prior Luganda-specific content (docs, code, tests,
+  fixtures) had to be swept for the rename; the main risk was missing a
+  reference during that sweep — mitigated by a two-pass grep (word-
+  boundary, then a broader substring pass to catch cases like
+  `layer1_lug` where an underscore prevents a `\b` word-boundary match)
+  and by re-running the full test suite after the sweep.
+- **Confidence:** High — this is a straightforward relabelling with a
+  clear, disclosed reason, and the pipeline's language-parametrised
+  design (via `common.LANGUAGES`) was built precisely to make this kind
+  of change safe.

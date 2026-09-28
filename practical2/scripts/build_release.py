@@ -16,7 +16,7 @@ REFUSES TO RUN (exits nonzero, writes nothing) if:
 
 On success, assembles:
   - release/dataset.jsonl, release/dataset.csv    (combined, both languages)
-  - release/lug/dataset_lug.jsonl(.csv)             (Luganda-only config)
+  - release/cgg/dataset_cgg.jsonl(.csv)             (Rukiga-only config)
   - release/yor/dataset_yor.jsonl(.csv)             (Yoruba-only config)
   - release/README.md                               (the filled card)
   - release/LICENSE                                 (CC BY 4.0 notice, proposed)

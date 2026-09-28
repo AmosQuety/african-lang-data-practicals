@@ -1,8 +1,8 @@
 # Test fixtures
 
-Everything in this folder is **synthetic**. No real Luganda, Yoruba, or
+Everything in this folder is **synthetic**. No real Rukiga, Yoruba, or
 English data appears here — every `text`/`translation_en` value is a
-placeholder string prefixed `TEST_LUG_TEXT_`, `TEST_YOR_TEXT_`, or
+placeholder string prefixed `TEST_CGG_TEXT_`, `TEST_YOR_TEXT_`, or
 `TEST_EN_TRANSLATION_`, per the DATA SAFETY RULES in `practical2/README.md`
 / the task brief. These files exist only to exercise the pipeline's logic
 (NFC normalisation, dedup, PII flags, etc.) and must never be copied into

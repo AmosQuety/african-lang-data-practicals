@@ -17,10 +17,13 @@ from pathlib import Path
 # Schema
 # ---------------------------------------------------------------------------
 
-LANGUAGES = ("lug", "yor")
-LANGUAGE_NAMES = {"lug": "Luganda", "yor": "Yoruba"}
+LANGUAGES = ("cgg", "yor")
+LANGUAGE_NAMES = {"cgg": "Rukiga", "yor": "Yoruba"}
 
 # Column order matches docs/raw_template.csv and docs/SCHEMA.md.
+# source_url/site_name/retrieved_date/source_license/translation_source
+# were added 2026-09-29 when web-scraping from openly-licensed sites was
+# permitted alongside consented human collection — see DECISIONS.md D026.
 ALL_FIELDS = [
     "id",
     "language",
@@ -35,8 +38,20 @@ ALL_FIELDS = [
     "reviewed",
     "reviewer_id",
     "reviewed_by_independent",
+    "source_url",
+    "site_name",
+    "retrieved_date",
+    "source_license",
+    "translation_source",
 ]
 
+# Base structurally-required fields. contributor_id is REQUIRED for
+# human-collected source_types but optional ("N/A") for "web-scraped";
+# source_url/site_name/retrieved_date/source_license/translation_source
+# are REQUIRED for "web-scraped" but not applicable to human-collected
+# rows. This source_type-conditional logic lives in
+# validate_auto.check_schema_and_required, not in this static list — see
+# DECISIONS.md D027.
 REQUIRED_FIELDS = [
     "id",
     "language",
@@ -48,11 +63,26 @@ REQUIRED_FIELDS = [
     "reviewed_by_independent",
 ]
 
+# Required only when source_type == "web-scraped" (see DECISIONS.md D027).
+WEB_SCRAPE_REQUIRED_FIELDS = [
+    "source_url",
+    "site_name",
+    "retrieved_date",
+    "source_license",
+    "translation_source",
+]
+
 OPTIONAL_FIELDS = [f for f in ALL_FIELDS if f not in REQUIRED_FIELDS]
 
 BOOLEAN_FIELDS = ("reviewed", "reviewed_by_independent")
 
-SOURCE_TYPES = ("self-written", "volunteer-contributed", "proverb", "other")
+SOURCE_TYPES = ("self-written", "volunteer-contributed", "proverb", "other", "web-scraped")
+
+TRANSLATION_SOURCES = ("site", "machine")
+
+# "N/A" is the accepted contributor_id value for web-scraped rows, which
+# have no individual human contributor (see DECISIONS.md D027).
+CONTRIBUTOR_ID_NA = "N/A"
 
 ID_PATTERN = re.compile(r"^[a-z]{3}-[0-9]{4,}$")
 CONTRIBUTOR_ID_PATTERN = re.compile(r"^C[0-9]{3,}$")
@@ -108,7 +138,7 @@ def parse_bool_strict(raw_value: str | None) -> tuple[bool, bool]:
 # Curly quote / apostrophe variants normalised to straight ASCII.
 # NOTE: does NOT include U+02BC (MODIFIER LETTER APOSTROPHE) or any
 # combining diacritical marks / tone marks — those may be phonemic in
-# Luganda or Yoruba and must never be touched (DECISIONS.md D005).
+# Rukiga or Yoruba and must never be touched (DECISIONS.md D005).
 _QUOTE_MAP = {
     "‘": "'",  # LEFT SINGLE QUOTATION MARK
     "’": "'",  # RIGHT SINGLE QUOTATION MARK

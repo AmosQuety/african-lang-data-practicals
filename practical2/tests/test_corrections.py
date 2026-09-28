@@ -64,7 +64,7 @@ def test_layer2_text_correction_is_blocked_and_routed_to_conflicts(tmp_path):
     dataset_path = _write_dataset(tmp_path, dataset)
     review_dir = tmp_path / "review"
     review_dir.mkdir(exist_ok=True)
-    _write_sheet(tmp_path, "layer1_lug", [])
+    _write_sheet(tmp_path, "layer1_cgg", [])
     _write_sheet(tmp_path, "layer1_yor", [])
     _write_sheet(tmp_path, "layer2_by_author1", [
         _sheet_row("yor-0001", "yor", verdict="needs_correction", correction="text: TEST should not apply")
@@ -95,7 +95,7 @@ def test_layer2_text_correction_is_blocked_and_routed_to_conflicts(tmp_path):
 
 def test_conflicting_non_text_corrections_are_not_applied(tmp_path):
     dataset = [{
-        "id": "lug-0001", "language": "lug", "text": "TEST original text",
+        "id": "cgg-0001", "language": "cgg", "text": "TEST original text",
         "translation_en": "TEST original en", "contributor_id": "C001", "region": "OldRegion",
         "dialect": None, "date_collected": "2026-01", "source_type": "self-written",
         "domain": "test", "reviewed": False, "reviewer_id": None, "reviewed_by_independent": False,
@@ -103,13 +103,13 @@ def test_conflicting_non_text_corrections_are_not_applied(tmp_path):
     dataset_path = _write_dataset(tmp_path, dataset)
     review_dir = tmp_path / "review"
     review_dir.mkdir(exist_ok=True)
-    _write_sheet(tmp_path, "layer1_lug", [])
+    _write_sheet(tmp_path, "layer1_cgg", [])
     _write_sheet(tmp_path, "layer1_yor", [])
     _write_sheet(tmp_path, "layer2_by_author1", [
-        _sheet_row("lug-0001", "lug", verdict="ok", correction="region: RegionA")
+        _sheet_row("cgg-0001", "cgg", verdict="ok", correction="region: RegionA")
     ])
     _write_sheet(tmp_path, "layer2_by_author2", [
-        _sheet_row("lug-0001", "lug", verdict="ok", correction="region: RegionB")
+        _sheet_row("cgg-0001", "cgg", verdict="ok", correction="region: RegionB")
     ])
 
     out_path = tmp_path / "dataset_corrected.jsonl"
@@ -133,7 +133,7 @@ def test_conflicting_non_text_corrections_are_not_applied(tmp_path):
 
 def test_layer1_text_correction_is_applied_and_marks_independent_review(tmp_path):
     dataset = [{
-        "id": "lug-0001", "language": "lug", "text": "TEST original text",
+        "id": "cgg-0001", "language": "cgg", "text": "TEST original text",
         "translation_en": "TEST original en", "contributor_id": "C001", "region": None,
         "dialect": None, "date_collected": "2026-01", "source_type": "self-written",
         "domain": "test", "reviewed": False, "reviewer_id": None, "reviewed_by_independent": False,
@@ -141,8 +141,8 @@ def test_layer1_text_correction_is_applied_and_marks_independent_review(tmp_path
     dataset_path = _write_dataset(tmp_path, dataset)
     review_dir = tmp_path / "review"
     review_dir.mkdir(exist_ok=True)
-    _write_sheet(tmp_path, "layer1_lug", [
-        _sheet_row("lug-0001", "lug", verdict="needs_correction", correction="text: TEST corrected text")
+    _write_sheet(tmp_path, "layer1_cgg", [
+        _sheet_row("cgg-0001", "cgg", verdict="needs_correction", correction="text: TEST corrected text")
     ])
     _write_sheet(tmp_path, "layer1_yor", [])
     _write_sheet(tmp_path, "layer2_by_author1", [])

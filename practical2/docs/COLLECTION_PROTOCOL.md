@@ -7,6 +7,16 @@ This is the working procedure for collecting entries for the dataset. It
 exists so that both authors collect consistently, even though neither can
 verify the other's language.
 
+> **This protocol covers consented human collection only.** As of
+> 2026-09-29, entries may also be sourced by scraping openly-licensed
+> websites (lecturer-approved — see DECISIONS.md D026), which follows a
+> different process (no consent form, since no individual is contributing
+> personal data — instead source attribution and license tracking; see
+> `scripts/scrape_source.py` and `docs/SCHEMA.md`'s `source_url`/
+> `site_name`/`source_license`/`translation_source` fields). The
+> DATA SAFETY RULES below (no PII, no private individuals) still apply
+> fully to scraped text.
+
 ## 1. Before collecting: consent
 
 1. Read (or paraphrase accurately) `CONSENT_FORM.md` to the contributor in
@@ -20,7 +30,7 @@ verify the other's language.
 ## 2. What to collect
 
 - Short sentences, phrases, or proverbs in the contributor's language
-  (Luganda for Author 1's contributors, Yoruba for Author 2's).
+  (Rukiga for Author 1's contributors, Yoruba for Author 2's).
 - Aim for entries that are self-contained and make sense out of context.
 - Target: 150–250 entries per language in total across all contributors
   (see `TEAM_PLAN.md` for how this is split across contributors/sessions).

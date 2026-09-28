@@ -305,3 +305,58 @@ UTC. Written as work happens, not reconstructed afterward.
   where that's the true answer — e.g. the review-verdict vocabulary and
   the author-assignment default are both flagged as this pipeline's own
   conventions, not requirements from the assignment brief).
+
+## 2026-09-29 — Stage 8: scope change (web-scraping) + language change (Luganda → Rukiga)
+
+- Received a new authoritative instruction (attachment) permitting
+  web-scraping from openly-licensed sites as an alternative to human
+  collection (lecturer-approved), and changing Author 1's language from
+  Luganda to Rukiga (`cgg`) — Author 1 is a native Rukiga speaker. Both
+  changes recorded in `DECISIONS.md` D026/D027, explicitly additive to
+  Stages 1-6, not a restart.
+- Updated `scripts/common.py`: `LANGUAGES`/`LANGUAGE_NAMES` lug→cgg,
+  `ALL_FIELDS` extended with `source_url`, `site_name`, `retrieved_date`,
+  `source_license`, `translation_source`; added `WEB_SCRAPE_REQUIRED_FIELDS`,
+  `TRANSLATION_SOURCES`, `CONTRIBUTOR_ID_NA`; `SOURCE_TYPES` extended with
+  `"web-scraped"`.
+- Updated `scripts/validate_auto.py`'s `check_schema_and_required` to be
+  conditional on `source_type`: web-scraped rows require the 5 new
+  fields and do not get flagged for missing `contributor_id`;
+  human-collected rows are unchanged (still require `contributor_id`).
+  `translation_source` validated against its enum when present.
+- Swept Luganda/lug → Rukiga/cgg across `scripts/*.py`, `tests/*.py`,
+  `tests/fixtures/*`, and `docs/*.md` (including `schema.json`,
+  `raw_template.csv`). Historical entries already in `LOG.md` and
+  `DECISIONS.md` from earlier stages were deliberately left unchanged —
+  they are append-only records of what was true at the time, not living
+  documentation.
+- Two-pass grep used to avoid missing references: a word-boundary pass
+  (`\blug\b`) followed by a broader substring pass, which caught one bug
+  the first pass missed — `scripts/apply_corrections.py` had a hardcoded
+  `layer1_lug` sheet name (no word boundary between `_` and `lug`) that
+  would have silently broken Layer 1 review lookups for `cgg`. Fixed by
+  deriving the `sheets` dict from `common.LANGUAGES` dynamically instead
+  of hardcoding language codes, which also future-proofs against this
+  class of bug recurring.
+- Deliberately did NOT fabricate an example Rukiga sentence in
+  `docs/FILLING_GUIDE.md` (it previously had an invented Luganda
+  example) — replaced with a note explaining why no example is given,
+  consistent with this project's data-integrity stance even for
+  documentation.
+- Updated `release/DATASET_CARD_TEMPLATE.md`: language list, fields
+  table (added the 5 new fields + contributor_id N/A note), split "How
+  the data was collected" into human-collection and web-scraping
+  methods, added a new "Sources and credits (web-scraped entries)"
+  `[FILL IN]` scaffold subsection, rewrote "Consent and ethics" to
+  distinguish consent-based (human) from attribution/license-based
+  (scraped) provenance, and swept remaining Luganda mentions.
+- Updated `README.md` and `VIVA_NOTES.md` (living docs) for the language
+  change and to mention the web-scraping path; `DECISIONS.md`/`LOG.md`
+  entries from earlier stages left untouched as historical record.
+- Re-ran `python3 -m pytest tests/ -q`: all 35 tests pass after the
+  rename and schema-logic changes (3 failures during the rename were
+  fixed along the way — two were fixture literals needing `lug`→`cgg`,
+  one was the `apply_corrections.py` sheets-dict bug above).
+- Next: Stage 9 — investigate africanstorybook.org's access method
+  (JSON/API vs. JS-rendering) before writing any scraper code, per the
+  new instruction's technical caveat.

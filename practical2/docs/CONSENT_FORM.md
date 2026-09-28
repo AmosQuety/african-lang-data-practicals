@@ -2,16 +2,16 @@
 > Kupoluyi before any real collection begins.** Follow our course's ethics
 > guidance where it differs from this draft. This text is in English; the
 > collector must explain it, out loud, in the contributor's own language
-> (Luganda or Yoruba), before the contributor agrees to take part.
+> (Rukiga or Yoruba), before the contributor agrees to take part.
 
 # Consent to Contribute a Language Sample
 
 ## What we are asking you for
 
 We are asking you to share a short sentence, phrase, or proverb in
-[Luganda / Yoruba — delete as applicable] and to help us write an English
+[Rukiga / Yoruba — delete as applicable] and to help us write an English
 translation of it. We are university students building a small, original
-dataset of written [Luganda / Yoruba] text with English translations for a
+dataset of written [Rukiga / Yoruba] text with English translations for a
 data science course assignment.
 
 ## What we will do with it
@@ -24,7 +24,7 @@ data science course assignment.
   dataset, including for research or commercial purposes, as long as they
   credit the dataset per the license.
 - Your text may be used to help build or evaluate language tools (for
-  example, translation or text-processing tools) for [Luganda / Yoruba].
+  example, translation or text-processing tools) for [Rukiga / Yoruba].
 
 ## What we will NOT do
 

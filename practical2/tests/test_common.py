@@ -1,7 +1,7 @@
 """Unit tests for scripts/common.py normalisation primitives.
 
 All test strings are synthetic placeholders (TEST_*), never real
-Luganda/Yoruba/English data, and diacritic test data uses explicit Unicode
+Rukiga/Yoruba/English data, and diacritic test data uses explicit Unicode
 escapes as required by the DATA SAFETY RULES.
 """
 import unicodedata
@@ -85,7 +85,7 @@ def test_parse_bool_strict_recognised_and_unrecognised():
 
 def test_record_to_schema_logs_boolean_anomalies():
     anomalies = []
-    row = {"id": "lug-0001", "language": "lug", "reviewed": "flase", "reviewed_by_independent": ""}
+    row = {"id": "cgg-0001", "language": "cgg", "reviewed": "flase", "reviewed_by_independent": ""}
     out = common.record_to_schema(row, anomalies)
     assert out["reviewed"] is False
     assert out["reviewed_by_independent"] is False
