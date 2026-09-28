@@ -100,3 +100,23 @@ UTC. Written as work happens, not reconstructed afterward.
   Luganda/Yoruba text — expected fixture noise, not a script bug; real
   collected data won't carry that prefix. Output discarded after
   inspection (was in `/tmp`, not `reports/`).
+- Committed (`3576880`) and pushed.
+
+## 2026-09-28T12:55:00Z — Stage 4b: make_review_sheet.py
+
+- Wrote `scripts/make_review_sheet.py`: Layer 1 (per-language, all flagged
+  + reproducible seed-42 random sample of ≥max(20%, 50)) and Layer 2
+  (cross-author, English-side-only review, default author assignment =
+  language split unless `--contributor-map` is given, plus a shared
+  reproducible overlap set drawn from both languages for agreement
+  measurement). Writes CSV sheets with the exact required columns plus a
+  `.NOTE.md` per sheet carrying the mandatory Layer 2
+  "does-not-verify-target-language-correctness" caveat, and a
+  `reports/review/README.md` overview.
+- Smoke-tested against the Stage 3/4a fixture output: Layer 1 produced 9/9
+  Luganda and 5/5 Yoruba rows (small fixture, so the ≥50 floor pulled in
+  the whole language each time — expected at this scale); Layer 2 produced
+  7 entries for author1's sheet and 10 for author2's, with a 3-entry
+  overlap set present in both. Ran the script twice with identical inputs
+  and diffed the output directories — byte-identical, confirming seed-42
+  reproducibility. Output was in `/tmp`, discarded after inspection.

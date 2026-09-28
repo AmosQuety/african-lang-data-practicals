@@ -363,6 +363,72 @@ this assistant's confidence, for the authors to check.
 - **Confidence:** Low — this assistant is not a fluent Yoruba or Luganda
   speaker; the independent language reviewers are the real check here.
 
+### D016 — Default author assignment for Layer 2 cross-review
+
+- **Decision:** `make_review_sheet.py` needs to know which author collected
+  which entry to build "each author reviews the OTHER author's entries."
+  Without a `--contributor-map` file, it defaults to: all Luganda entries
+  belong to Author 1, all Yoruba entries belong to Author 2.
+- **Evidence or reasoning:** This matches this specific project's actual
+  design (one author per language, stated in the task brief's CONFIG
+  section and `docs/TEAM_PLAN.md`), so it's a safe default that needs no
+  extra file for the common case, while the `--contributor-map` CLI
+  argument (a local, gitignored file) is still supported for correctness
+  if that assumption ever stops holding.
+- **Alternatives considered:** Requiring `--contributor-map` always —
+  rejected as needless friction for a two-author/two-language project
+  where the mapping is definitionally the language split.
+- **Risk:** If the project ever adds a contributor who collects entries in
+  a language they're not "the author of" (e.g. a helper), the default
+  would misattribute those entries for cross-review purposes. Mitigated:
+  documented in the script's docstring and `reports/review/README.md`,
+  and overridable via `--contributor-map`.
+- **Confidence:** High for this project's current design; explicitly a
+  simplifying assumption, stated as such.
+
+### D017 — Overlap-set size formula
+
+- **Decision:** Overlap set size = `min(30, round(0.20 * total_entries))`,
+  clipped to at least 1 and to the dataset size.
+- **Evidence or reasoning:** The brief's exact wording is "at least 30
+  entries (or 20% of the dataset, whichever is smaller, drawn from both
+  languages)" — read as: the required minimum size is the SMALLER of 30
+  and 20% of the dataset (so a small dataset isn't forced into an
+  oversized overlap set, but a big dataset isn't left with a trivially
+  small one either).
+- **Alternatives considered:** `max(30, 20%)` — rejected, contradicts
+  "whichever is smaller" explicitly in the text. A flat 30 regardless of
+  dataset size — rejected, brief explicitly ties it to dataset size.
+- **Risk:** At the target size (300-500 entries total across both
+  languages), 20% is 60-100, so `min(30, 60-100) = 30` — the overlap set
+  will typically just be 30 regardless of exact final size, which matches
+  a plain reading of "at least 30."
+- **Confidence:** Medium — the sentence is compact enough to admit more
+  than one parsing; this is the most literal one.
+
+### D018 — Layer 1 sample: union of flagged + random sample, not exclusive
+
+- **Decision:** The Layer 1 random sample (seed 42, size
+  `max(20% of language, 50)`) is drawn from the FULL per-language pool
+  (including already-flagged items), then unioned with all flagged items —
+  so the final sheet size can be less than "flagged + sample" if they
+  overlap, but is never less than either alone.
+- **Evidence or reasoning:** The brief says "ALL flagged items plus a
+  random sample of at least 20%..." — "plus," not "plus, excluding
+  flagged items." Sampling from the full pool (rather than only unflagged
+  items) also means the random sample's statistical properties (e.g. for
+  spot-checking general quality) reflect the whole language, not a
+  flagged-biased subset.
+- **Alternatives considered:** Sampling only from non-flagged items to
+  guarantee the sheet size is exactly `flagged + sample_size` — rejected,
+  would bias the "random" sample away from being representative of the
+  language as a whole.
+- **Risk:** None significant — worst case the sheet is a little smaller
+  than the sum of the two targets when overlap is high, which is fine
+  since both targets ("all flagged" and "at least N random") are still
+  individually met.
+- **Confidence:** High.
+
 *(Further entries are appended in later stages as decisions come up —
 schema field choices are in `docs/SCHEMA.md`'s rationale section and
 summarised as D007+ below as validation, review and release stages are
