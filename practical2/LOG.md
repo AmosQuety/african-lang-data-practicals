@@ -250,3 +250,58 @@ UTC. Written as work happens, not reconstructed afterward.
   per-language jsonl/csv, README.md, LICENSE). All smoke-test output was
   in `/tmp`, discarded after inspection; nothing was written to the
   repo's real `release/` directory during testing.
+- Committed (`8c814cf`) and pushed.
+
+## 2026-09-28T14:20:00Z — Stage 6: hand-off — full end-to-end run and final docs
+
+- Ran the complete pipeline, in order, against the real default paths
+  (`data/raw`, `data/processed`, `reports/`), using ONLY the synthetic
+  fixtures (`tests/fixtures/raw_sample_author1.csv`,
+  `raw_sample_author2.csv`) as `--raw-dir` input to `preprocess.py`:
+  1. `preprocess.py --raw-dir tests/fixtures` → 14 entries.
+  2. `validate_auto.py` → 26 flags, 3 PII flags (PII check: FAIL, as
+     expected — the fixtures deliberately contain fake PII strings).
+  3. `make_review_sheet.py` → Layer 1 (9 lug / 5 yor), Layer 2 (7 / 10),
+     3-entry overlap set (`lug-0001`, `id-conflict-001`, `yor-0002`).
+  4. Hand-filled all four review sheets with verdicts/corrections,
+     including one deliberate Layer 1↔Layer 2 disagreement (`yor-0002`:
+     Layer 2 author1 says `needs_correction`, author2 says `ok`) and one
+     deliberate improper Layer 2 text-field correction attempt.
+  5. `compute_agreement.py` → overlap 3/3 completed, 66.7% agreement,
+     Cohen's kappa 0.400 ("fair"), 1 disagreement listed (`yor-0002`) —
+     matches the deliberately-planted disagreement exactly.
+  6. `apply_corrections.py` → 3 corrections applied, 1 conflict
+     (the planted improper Layer 2 text edit on `yor-0002`, correctly
+     blocked and routed to `reports/conflicts.csv`, not applied).
+  7. `fill_card_stats.py` → sane per-language numbers matching the known
+     fixture composition (9 lug / 5 yor, review shares reflecting exactly
+     which sheets were filled in).
+  8. `build_release.py` (real card, real reports) → **correctly refused**,
+     citing all three gates simultaneously: PII check FAIL, 1 unresolved
+     conflict, 20 `[FILL IN]` placeholders remaining in the real,
+     never-filled `release/DATASET_CARD_TEMPLATE.md`. This is the correct
+     and expected outcome for this dry run — Stage 5's own smoke test
+     (see above) already separately confirmed the success path works when
+     given a genuinely clean, filled card and passing reports.
+  - Re-ran `python3 -m pytest tests/ -q`: **35/35 passed.**
+- **Cleanup:** deleted every file `preprocess.py`/`validate_auto.py`/
+  `make_review_sheet.py`/`compute_agreement.py`/`apply_corrections.py`/
+  `fill_card_stats.py` wrote under `data/processed/` and `reports/`
+  during this run, restored empty `.gitkeep` placeholders in both, and
+  confirmed via `git status` that nothing new was left staged or
+  untracked (these directories are exactly as they were after Stage 1,
+  since all pipeline output there is gitignored-equivalent by convention
+  — nothing under `data/processed/` or `reports/` is meant to be
+  committed as part of this pipeline-building work). `release/` was
+  never written to by this run (build_release.py refused before writing
+  anything) and still contains only the checked-in
+  `DATASET_CARD_TEMPLATE.md`. Confirmed no fixture data remains in
+  `data/`, `release/`, or `reports/`.
+- Wrote the final `README.md` (full layout, setup, the exact
+  ordered pipeline commands demonstrated above, and an explicit checklist
+  of what the two authors must still do by hand) and `VIVA_NOTES.md`
+  (anticipated questions, each answered only from `DECISIONS.md` and the
+  docs already in this repo, with "default/not sure" stated honestly
+  where that's the true answer — e.g. the review-verdict vocabulary and
+  the author-assignment default are both flagged as this pipeline's own
+  conventions, not requirements from the assignment brief).
