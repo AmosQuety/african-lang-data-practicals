@@ -710,3 +710,57 @@ built.)*
   clear, disclosed reason, and the pipeline's language-parametrised
   design (via `common.LANGUAGES`) was built precisely to make this kind
   of change safe.
+
+### D028 — Stage 9 stopped at the self-check gate: sandbox cannot reach any approved scraping source
+
+- **Decision:** `scripts/scrape_source.py` was written (per D026/D027)
+  but never executed against live data in this assistant's session, and
+  the Stage 9 small-batch self-check gate is treated as failed for both
+  languages. `practical2/BLOCKED.md` documents this; no scraped rows
+  were written to `data/raw/`, no workaround was attempted, and no
+  unapproved source or substitute language was used.
+- **Evidence or reasoning:** Direct investigation (see `LOG.md`'s Stage 9
+  entry for full detail) found: (a) `global-asp/storybooks-uganda`, the
+  one approved source reachable from this session (via `git clone`, a
+  GitHub host), has zero real Rukiga or Yoruba content — confirmed by
+  reading the actual repo, not assumed; (b) `www.africanstorybook.org`
+  and `yo.wikipedia.org`, the other two approved sources, are not
+  reachable at all from shell-level code in this session — confirmed via
+  direct connection attempts, which returned `403` from the session's
+  own network egress policy (documented as "organization policy denial
+  — do not retry or route around it — report the blocked host"); (c) the
+  one in-session tool that can reach those sites (`WebFetch`) was tested
+  against known ground truth and found to return factually wrong text
+  when asked to quote a specific HTML element verbatim — unacceptable
+  for collecting actual dataset entries, given this project's standing
+  rule that no step may alter or mis-transcribe target-language text
+  (D005/D009).
+- **Alternatives considered:** Using `WebFetch` anyway to manually
+  harvest a small batch — rejected once its ground-truth test failed;
+  the risk of publishing silently-wrong "Rukiga" or "Yoruba" text in an
+  open dataset outweighs having some scraped data. Substituting
+  Runyankore (`nyn`, present in `storybooks-uganda`) for Rukiga since
+  they're closely related — rejected, explicitly forbidden by the
+  brief's "do NOT substitute another language" instruction, and they are
+  distinct ISO 639-3 languages. Attempting to bypass the session's
+  network policy to reach the other two sources — rejected outright per
+  the proxy's own documented instruction not to route around an
+  organization policy denial. Silently proceeding to Stage 10 with an
+  empty scraped dataset and no explanation — rejected as dishonest by
+  omission; `BLOCKED.md` exists specifically so this is disclosed rather
+  than hidden.
+- **Risk:** The dataset will have zero web-scraped entries until an
+  author runs `scripts/scrape_source.py` themselves from a machine with
+  normal internet access (see `BLOCKED.md` for exactly what's left to
+  do — book-id discovery for africanstorybook.org, an EPUB
+  paragraph-language-split implementation, and a real MT backend for the
+  Yoruba Wikipedia path, all deliberately left as explicit `NotImplementedError`s
+  rather than guessed at without verification). This does not affect
+  Stages 1-6 (human collection), which remains complete and independent
+  of this blocker.
+- **Confidence:** High that stopping here (rather than working around
+  the network policy or trusting `WebFetch`'s unverified text) is the
+  correct, brief-compliant call — it matches Stage 9's own instruction to
+  stop and write `BLOCKED.md` rather than scale up on a failed check, and
+  the "most conservative option" rule for anything not explicitly
+  covered by the brief.

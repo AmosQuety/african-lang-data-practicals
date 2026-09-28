@@ -360,3 +360,152 @@ UTC. Written as work happens, not reconstructed afterward.
 - Next: Stage 9 — investigate africanstorybook.org's access method
   (JSON/API vs. JS-rendering) before writing any scraper code, per the
   new instruction's technical caveat.
+
+## 2026-09-29 — Stage 9: technical investigation, volume estimate, self-check gate — BLOCKED
+
+Per the brief: investigate real data-access method for each approved
+source BEFORE building a scraper, do a volume estimate, then build
+`scripts/scrape_source.py`, run a 15-entries/language small batch through
+`validate_auto.py`, and only auto-continue to the full target if it
+passes cleanly. Findings below explain why this run stops at the small-
+batch gate rather than continuing, per Stage 9's own instruction ("If any
+check fails... STOP, do not scale up... write BLOCKED.md").
+
+### Investigation: `global-asp/storybooks-uganda`
+
+Cloned the public repo directly (`git clone --depth 1
+https://github.com/global-asp/storybooks-uganda`) rather than fetching
+the live site, since it is a static GitHub Pages site and the repo itself
+is the ground truth. Findings:
+
+- **Static HTML, not JS-rendered.** Story pages
+  (`stories/<langcode>/<id>/index.html`) contain the local-language text,
+  English, and Swahili directly in the HTML (`<div class="... def">`,
+  `<div class="... l1">`, `<div class="... l2">` respectively), with a
+  per-story human translator credited (e.g. "Translated by Julius
+  Tusiime" on `stories/nyn/0327/index.html`). No browser or JS execution
+  needed to read a story once you have its path.
+- **No Rukiga content exists on this site.** The directory listing under
+  `stories/` has no `cgg`/`kiga` folder. `about/languages/index.html`
+  explicitly lists "Rukiga" among languages the project *hopes* to cover,
+  with **no link** next to it (unlike "Runyankore", which does have a
+  linked `stories/nyn/` folder) — the page states outright: "Please note
+  that some translations and recordings are not yet complete... We are
+  always looking for translators!" Runyankore (`nyn`) is a closely
+  related but ISO-639-3-distinct language (`nyn` vs. Rukiga's `cgg`) and
+  was NOT substituted for Rukiga, per the brief's explicit "do NOT
+  substitute another language" rule — Runyankore content was used only
+  to verify the *parser* works correctly against real markup (see below),
+  never harvested into `data/raw/`.
+- **No Yoruba content exists on this site** — it is a Uganda-specific
+  project (confirmed: no `yor` directory, no mention of Yoruba anywhere
+  in the repo).
+- **Net result: this source contributes 0 entries for both target
+  languages**, despite being named PRIMARY for both in the brief. This
+  is disclosed here rather than worked around.
+- The scraper's HTML-parsing logic (`scripts/scrape_source.py`'s
+  `_parse_storybooks_uganda_story`) was still verified end-to-end against
+  this real, checked-out site by temporarily pointing it at the `nyn`
+  (Runyankore) directory, which does have real content: it correctly
+  extracted the exact local-language/English text pairs verbatim,
+  matching the raw HTML byte-for-byte (e.g. "Enjojo emwe neza kunywa
+  ameizi." / "One elephant is going to drink water." from
+  `stories/nyn/0327/`). This confirms the parser itself is sound; the
+  blocker is purely lack of Rukiga/Yoruba content on this specific site,
+  not a scraping-technique problem. This test output was never written
+  to `data/raw/` (Runyankore is not an approved language for this
+  project).
+
+### Investigation: `www.africanstorybook.org`
+
+- `robots.txt` is effectively open (`User-agent: *` with no Disallow
+  rules), and the homepage claims "260 Languages, ~5470 Storybooks."
+- **The book catalogue needs a JS-executing browser.** Individual story
+  pages (`reader.php?id=<id>`) redirect to a JS viewer
+  (`newviewer/index.php?id=<id>...`) and the site's own catalogue-listing
+  variables (`bookItemsAppr`, `languages`) are populated by client-side
+  JavaScript after page load, not present in the static HTML or in any
+  discoverable JSON/API endpoint. This was confirmed conclusively by
+  reading the source of a real, working third-party scraper for this
+  exact site — `learningequality/sushi-chef-african-storybook` (public
+  GitHub repo, cloned to inspect `chef.py`) — which uses `pyppeteer`
+  (headless Chrome) specifically to run
+  `driver.execute_script("return bookItemsAppr;")` and
+  `driver.execute_script("return languages;")` to get the catalogue.
+- **Individual books ARE downloadable without a browser once you know
+  the book id**: `GET /makeapp/data/landscape.php?id=<id>` returns a
+  static EPUB file (confirmed in the same third-party scraper's code,
+  `download_epub_book()`), which is just a zip of XHTML pages — normal
+  parsing, no JS needed for that step.
+- **Rukiga-specific volume could not be checked.** Without either a
+  headless browser or a hand-collected list of Rukiga book ids (both
+  require actually browsing the live site's language filter), there was
+  no way to determine how many genuine Rukiga stories exist here, if any.
+
+### Investigation: `yo.wikipedia.org` REST API
+
+Per the brief: REST API only (`/api/rest_v1/`), never HTML crawling,
+descriptive User-Agent required — `scripts/scrape_source.py` implements
+exactly this (`YOWIKI_API_BASE`, `USER_AGENT` constant naming the project
+and a contact email) and reuses the pipeline's own PII regexes to filter
+extracted sentences before they're kept, matching the same discipline as
+every other source in this script.
+
+### The actual blocker: this session's own network sandbox
+
+None of the three approved sources' live sites could be reached from
+shell-level code in this assistant's sandboxed session — confirmed via
+direct `curl` attempts (`africanstorybook.org`, `global-asp.github.io`,
+`yo.wikipedia.org` all returned `CONNECT tunnel failed, response 403`)
+and the sandbox's own proxy documentation, which states plainly: "The
+destination host is not allowed by your organization's egress policy for
+this session. Do not retry or route around it — report the blocked
+host." Only two kinds of hosts are reachable from shell code here:
+GitHub (used above, via `git clone`, for the two public repos inspected)
+and language package registries (pypi/npm) — not general websites.
+
+The `WebFetch` tool (a separate, non-shell tool available in this
+session) CAN reach these sites, so it was used throughout this
+investigation for research (reading `robots.txt`, page structure,
+language lists). But it was also tested directly against ground truth
+for exact-text fidelity, since verbatim text is what a linguistic
+dataset actually needs: asked to quote the exact text of
+`stories/nyn/0327/`'s `id="text02"` element, it returned the text from a
+*different* element (`id="text03"`, "Entureje ibiiri..." instead of the
+correct "Enjojo emwe...") — confirmed wrong against the same page's real
+HTML (read via the git checkout). `WebFetch` runs page content through a
+summarization model before returning it, which is appropriate for
+research questions but not safe for collecting exact source text, so it
+was not used to harvest any dataset entries, per this project's
+DATA SAFETY RULES/data-integrity stance (no pipeline step is allowed to
+silently alter or mis-transcribe target-language text).
+
+### Volume estimate
+
+Given the above: `global-asp/storybooks-uganda` = 0 for both languages
+(confirmed, content doesn't exist). `africanstorybook.org` and
+`yo.wikipedia.org` = **could not be estimated**, since estimating
+requires actually browsing/querying the live sites, which this session
+cannot do at the shell/script level, and cannot do reliably at all via
+`WebFetch` (fidelity issue above). No volume estimate below 50 is being
+reported here as a "disclosed low count" — the honest status is that the
+volume is **unknown**, not low, because the check itself couldn't run.
+
+### Self-check gate outcome: BLOCKED
+
+Per Stage 9's instruction, this is treated as a failed self-check gate:
+no small batch could be produced or validated for either language from
+any approved source, so this run does **not** scale up and does **not**
+attempt a workaround (no proxy bypass, no alternate/unapproved source,
+no substituting Runyankore for Rukiga). See `practical2/BLOCKED.md` for
+the explanation written for the authors, with the concrete example
+above. `scripts/scrape_source.py` is still written and committed — its
+storybooks-uganda path was verified end-to-end against real data (module
+docstring explains exactly what was and wasn't verified); its
+africanstorybook.org and yo.wikipedia.org paths are implemented per each
+source's documented/verified access pattern but were never executed
+against live data, and are clearly marked as such for an author running
+this on a machine with normal (unrestricted) internet access.
+
+This does not affect Stages 1-6 (the human-collection pipeline), which
+remains fully built, tested, and unaffected by this blocker.
