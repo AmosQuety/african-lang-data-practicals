@@ -120,3 +120,23 @@ UTC. Written as work happens, not reconstructed afterward.
   overlap set present in both. Ran the script twice with identical inputs
   and diffed the output directories — byte-identical, confirming seed-42
   reproducibility. Output was in `/tmp`, discarded after inspection.
+- Committed (`5b56c08`) and pushed.
+
+## 2026-09-28T13:10:00Z — Stage 4c: compute_agreement.py
+
+- Wrote `scripts/compute_agreement.py`: loads two completed Layer 2
+  sheets, intersects their ids (the overlap set), computes percent
+  agreement and Cohen's kappa (stdlib only, `collections.Counter`-based)
+  over ids completed by both reviewers, lists disagreements, and reports
+  ids not yet completed by both separately (not treated as
+  disagreements). Report states explicitly that this is English-side
+  agreement, not target-language-correctness agreement.
+- Smoke-tested by hand-filling verdicts into the Stage 4b sample sheets
+  (a mix of matching and one deliberately-attempted mismatch, plus one
+  left incomplete): correctly identified the real 3-id overlap set
+  (`id-conflict-001`, `lug-0001`, `yor-0002` — not the ids this assistant
+  initially guessed, which was a useful check that the script's own
+  overlap-set logic, not assumption, is authoritative), computed 100%
+  agreement / kappa 1.0 on the 2 ids both reviewers had completed, and
+  correctly reported the 3rd (`yor-0002`) as incomplete rather than a
+  disagreement. Output discarded after inspection.

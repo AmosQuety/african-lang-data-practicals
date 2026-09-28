@@ -429,6 +429,35 @@ this assistant's confidence, for the authors to check.
   individually met.
 - **Confidence:** High.
 
+### D019 — Verdict vocabulary and agreement scope
+
+- **Decision:** `reviewer_verdict` is expected to be one of `ok`,
+  `needs_correction`, `reject` (documented in `reports/review/README.md`
+  and `docs/VIVA_NOTES.md`). Agreement (percent + Cohen's kappa) is
+  computed only over overlap ids where BOTH reviewers have filled in a
+  non-blank verdict; incomplete ones are reported separately, not treated
+  as a disagreement or excluded silently.
+- **Evidence or reasoning:** The brief leaves the verdict vocabulary
+  undefined but needs one for kappa to be meaningful (kappa requires
+  discrete categories); a 3-way ok/needs_correction/reject scale is the
+  simplest vocabulary that distinguishes "fine," "fixable," and
+  "shouldn't be in the dataset," which covers what a Layer 2 English-side
+  reviewer can actually judge. Restricting agreement stats to
+  both-completed rows (rather than treating a blank as a category, or
+  erroring) keeps the statistic honest and lets the report show real
+  work-in-progress state.
+- **Alternatives considered:** A free-text verdict with no fixed
+  vocabulary — rejected, kappa becomes near-meaningless if every reviewer
+  invents their own wording. Treating an incomplete row as automatic
+  disagreement — rejected, conflates "haven't reviewed yet" with "reviewed
+  and disagreed," which would misrepresent progress.
+- **Risk:** If reviewers don't stick to the 3-value vocabulary, kappa
+  still computes (the implementation handles arbitrary category strings)
+  but the report becomes harder to interpret. Mitigated by stating the
+  expected vocabulary prominently in the sheet README.
+- **Confidence:** Medium — a reasonable default vocabulary, not specified
+  in the brief.
+
 *(Further entries are appended in later stages as decisions come up —
 schema field choices are in `docs/SCHEMA.md`'s rationale section and
 summarised as D007+ below as validation, review and release stages are
