@@ -47,8 +47,8 @@ data science course assignment.
 
 You can contact us at any time:
 
-- Nabasa Amos: [FILL IN — email/phone]
-- Jesulewami Kupoluyi: [FILL IN — email/phone]
+- Nabasa Amos: amosnabasa4@gmail.com
+- Jesulewami Kupoluyi: jesulewamikupoluyi@gmail.com
 
 ## Agreement
 

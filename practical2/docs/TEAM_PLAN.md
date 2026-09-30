@@ -8,8 +8,8 @@
 |---|---|---|
 | Author 1 — collects Rukiga (`cgg`) | Nabasa Amos | Also does Layer 2 cross-review of Yoruba entries (English-side only). |
 | Author 2 — collects Yoruba (`yor`) | Jesulewami Kupoluyi | Also does Layer 2 cross-review of Rukiga entries (English-side only). |
-| Layer 1 independent reviewer — Rukiga | [FILL IN — a fluent Rukiga speaker who did NOT collect the entries; Author 1 is a native Rukiga speaker but cannot review their own collected entries independently — this must be someone else, e.g. a family member/friend] | Anonymous code: `R0_ [FILL IN]` |
-| Layer 1 independent reviewer — Yoruba | [FILL IN — a fluent Yoruba speaker who did NOT collect the entries] | Anonymous code: `R0_ [FILL IN]` |
+| Layer 1 independent reviewer — Rukiga | Family member of Author 1, fluent Rukiga speaker, did not collect any entries (real identity kept outside this repo, per `docs/COLLECTION_PROTOCOL.md` Section 4) | Anonymous code: `R01` |
+| Layer 1 independent reviewer — Yoruba | **Not recruited before the deadline.** Entries were instead self-reviewed by Author 2 (the collector) — recorded separately in `reports/review/layer1_yor_selfreview.csv`, kept distinct from the official (still-empty) `layer1_yor.csv` so this is never mistaken for independent review. `reviewed_by_independent` is `false` for all Yoruba entries. | N/A — self-review, not independent |
 
 If no independent reviewer can be recruited for a language before the
 deadline, say so here rather than leaving it blank silently — the pipeline
@@ -74,5 +74,5 @@ are combined by `preprocess.py`.)
   pipeline development, Layer 2 cross-review of Yoruba entries, ...]
 - **Jesulewami Kupoluyi:** [FILL IN — e.g. Yoruba data collection (N
   entries), Layer 2 cross-review of Rukiga entries, ...]
-- **Layer 1 Rukiga reviewer:** [FILL IN name/role or "to be confirmed"]
+- **Layer 1 Rukiga reviewer (R01):** Family member of Author 1, fluent Rukiga speaker — independent review of all 57 flagged/sampled Rukiga entries (real identity not disclosed in this repo).
 - **Layer 1 Yoruba reviewer:** [FILL IN name/role or "to be confirmed"]

@@ -1,0 +1,54 @@
+id,language,check,detail
+cgg-0020,cgg,rare_character,contains character(s) rare in cgg (<= 2 entries dataset-wide): ['H']
+cgg-0026,cgg,rare_character,contains character(s) rare in cgg (<= 2 entries dataset-wide): ['B']
+cgg-0034,cgg,rare_character,contains character(s) rare in cgg (<= 2 entries dataset-wide): ['I']
+cgg-0039,cgg,rare_character,"contains character(s) rare in cgg (<= 2 entries dataset-wide): ['/', 'l']"
+cgg-0040,cgg,rare_character,contains character(s) rare in cgg (<= 2 entries dataset-wide): ['l']
+cgg-0043,cgg,rare_character,contains character(s) rare in cgg (<= 2 entries dataset-wide): ['B']
+cgg-0047,cgg,rare_character,contains character(s) rare in cgg (<= 2 entries dataset-wide): ['M']
+cgg-0050,cgg,rare_character,contains character(s) rare in cgg (<= 2 entries dataset-wide): ['T']
+cgg-0054,cgg,rare_character,contains character(s) rare in cgg (<= 2 entries dataset-wide): ['T']
+cgg-0059,cgg,rare_character,contains character(s) rare in cgg (<= 2 entries dataset-wide): ['M']
+yor-0001,yor,rare_character,"contains character(s) rare in yor (<= 2 entries dataset-wide): [""'"", 'A', 'ù', 'Ọ']"
+yor-0003,yor,rare_character,contains character(s) rare in yor (<= 2 entries dataset-wide): ['s']
+yor-0006,yor,rare_character,"contains character(s) rare in yor (<= 2 entries dataset-wide): ['-', 'u', 'ń']"
+yor-0007,yor,rare_character,"contains character(s) rare in yor (<= 2 entries dataset-wide): ['I', 'ǹ']"
+yor-0008,yor,rare_character,"contains character(s) rare in yor (<= 2 entries dataset-wide): ['I', 's', 'ù']"
+yor-0013,yor,rare_character,"contains character(s) rare in yor (<= 2 entries dataset-wide): ['A', 'K', 'f', 'Ṣ']"
+yor-0014,yor,rare_character,"contains character(s) rare in yor (<= 2 entries dataset-wide): ['N', 'T']"
+yor-0015,yor,rare_character,"contains character(s) rare in yor (<= 2 entries dataset-wide): ['!', 'M', 'È', 'Ò', 'Ọ']"
+yor-0017,yor,rare_character,contains character(s) rare in yor (<= 2 entries dataset-wide): ['Ò']
+cgg-0022,cgg,possible_pii,field 'translation_en' matched pattern 'capitalised_token(name?)'
+cgg-0025,cgg,possible_pii,field 'text' matched pattern 'capitalised_token(name?)'
+cgg-0027,cgg,possible_pii,field 'text' matched pattern 'capitalised_token(name?)'
+cgg-0030,cgg,possible_pii,field 'text' matched pattern 'capitalised_token(name?)'
+cgg-0039,cgg,possible_pii,field 'text' matched pattern 'capitalised_token(name?)'
+cgg-0039,cgg,possible_pii,field 'translation_en' matched pattern 'capitalised_token(name?)'
+cgg-0040,cgg,possible_pii,field 'text' matched pattern 'capitalised_token(name?)'
+cgg-0048,cgg,possible_pii,field 'text' matched pattern 'capitalised_token(name?)'
+cgg-0048,cgg,possible_pii,field 'translation_en' matched pattern 'capitalised_token(name?)'
+cgg-0056,cgg,possible_pii,field 'translation_en' matched pattern 'capitalised_token(name?)'
+cgg-0057,cgg,possible_pii,field 'translation_en' matched pattern 'capitalised_token(name?)'
+cgg-0059,cgg,possible_pii,field 'translation_en' matched pattern 'capitalised_token(name?)'
+cgg-0060,cgg,possible_pii,field 'translation_en' matched pattern 'capitalised_token(name?)'
+cgg-0062,cgg,possible_pii,field 'translation_en' matched pattern 'capitalised_token(name?)'
+cgg-0063,cgg,possible_pii,field 'translation_en' matched pattern 'capitalised_token(name?)'
+yor-0012,yor,possible_pii,field 'translation_en' matched pattern 'capitalised_token(name?)'
+yor-0013,yor,possible_pii,field 'translation_en' matched pattern 'capitalised_token(name?)'
+yor-0014,yor,possible_pii,field 'text' matched pattern 'capitalised_token(name?)'
+yor-0014,yor,possible_pii,field 'translation_en' matched pattern 'capitalised_token(name?)'
+yor-0015,yor,possible_pii,field 'translation_en' matched pattern 'capitalised_token(name?)'
+yor-0006,yor,language_looks_like_other_language,"character profile closer to 'cgg' (0.044) than to 'yor' (0.037) — heuristic only, human review needed"
+yor-0001,yor,diacritic_mixed_style,entry appears to mix tone-mark and subdot conventions (heuristic; human review needed)
+yor-0002,yor,diacritic_mixed_style,entry appears to mix tone-mark and subdot conventions (heuristic; human review needed)
+yor-0003,yor,diacritic_mixed_style,entry appears to mix tone-mark and subdot conventions (heuristic; human review needed)
+yor-0006,yor,diacritic_mixed_style,entry appears to mix tone-mark and subdot conventions (heuristic; human review needed)
+yor-0007,yor,diacritic_mixed_style,entry appears to mix tone-mark and subdot conventions (heuristic; human review needed)
+yor-0011,yor,diacritic_mixed_style,entry appears to mix tone-mark and subdot conventions (heuristic; human review needed)
+yor-0012,yor,diacritic_mixed_style,entry appears to mix tone-mark and subdot conventions (heuristic; human review needed)
+yor-0013,yor,diacritic_mixed_style,entry appears to mix tone-mark and subdot conventions (heuristic; human review needed)
+yor-0015,yor,diacritic_mixed_style,entry appears to mix tone-mark and subdot conventions (heuristic; human review needed)
+yor-0016,yor,diacritic_mixed_style,entry appears to mix tone-mark and subdot conventions (heuristic; human review needed)
+yor-0017,yor,diacritic_mixed_style,entry appears to mix tone-mark and subdot conventions (heuristic; human review needed)
+cgg-0058,cgg,translation_length_ratio_outlier,"translation/text length ratio 6.83 outside [0.15, 6.0]"
+cgg-0063,cgg,translation_length_ratio_outlier,"translation/text length ratio 6.78 outside [0.15, 6.0]"

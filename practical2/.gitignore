@@ -11,3 +11,6 @@ __pycache__/
 .pytest_cache/
 *.egg-info/
 .DS_Store
+
+# Personal scratch/draft notes, not dataset content
+Rukiga_Dataset.txt

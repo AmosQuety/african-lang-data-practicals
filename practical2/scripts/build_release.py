@@ -6,9 +6,10 @@ Usage:
         [--validation PATH] [--conflicts PATH] [--release-dir DIR]
 
 REFUSES TO RUN (exits nonzero, writes nothing) if:
-  1. reports/validation.md's PII check is not PASS (see
-     scripts/validate_auto.py — "PII check: FAIL" line), or is missing
-     entirely (validation hasn't been run).
+  1. Any row flagged 'possible_pii' in reports/flags.csv has no recorded
+     reviewer_verdict in any sheet under reports/review/ (see
+     check_pii_resolved below for why this isn't a blind PASS/FAIL
+     string match).
   2. reports/conflicts.csv has any unresolved rows (see
      scripts/apply_corrections.py).
   3. The card file (--card, default release/DATASET_CARD_TEMPLATE.md)
@@ -63,15 +64,49 @@ Human-readable summary: https://creativecommons.org/licenses/by/4.0/
 """
 
 
-def check_pii_pass(validation_path: Path) -> tuple[bool, str]:
-    if not validation_path.exists():
-        return False, f"{validation_path} does not exist — run scripts/validate_auto.py first."
-    text = validation_path.read_text(encoding="utf-8")
-    if "PII check: PASS" in text:
+def check_pii_resolved(flags_path: Path, review_dir: Path) -> tuple[bool, str]:
+    """Every row flagged 'possible_pii' must have a recorded reviewer_verdict
+    somewhere in reports/review/.
+
+    NOTE: this deliberately does NOT require zero possible_pii flags (unlike
+    an earlier version of this check, which read a literal "PII check: PASS"
+    / "FAIL" line from validate_auto.py's report). check_pii in
+    validate_auto.py is a blind regex/heuristic scan with no knowledge of
+    human review — it will re-flag the exact same capitalised words (proper
+    nouns, sentence-initial capitals, a bracketed "[meaning: ...]" clause in
+    a proverb translation) every single time it runs, forever, regardless of
+    whether a human already looked at them and confirmed they are not
+    personal data. Gating on "the raw flag count is zero" would make release
+    permanently impossible for any real dataset containing capitalised
+    proper nouns. Gating on "every flagged row has been looked at by a human
+    reviewer" matches how every other flag in this pipeline is already
+    handled (see docs/SCHEMA.md and DECISIONS.md: flags are for a human to
+    resolve, nothing is auto-deleted or auto-passed). See DECISIONS.md D030.
+    """
+    if not flags_path.exists():
+        return True, ""  # no flags file at all = validate_auto.py found nothing to flag
+    all_flags = common.read_csv(flags_path)
+    pii_ids = sorted({row["id"] for row in all_flags if row.get("check") == "possible_pii" and row.get("id")})
+    if not pii_ids:
         return True, ""
-    if "PII check: FAIL" in text:
-        return False, f"{validation_path} reports PII check: FAIL. Resolve flagged possible-PII items first."
-    return False, f"{validation_path} has no recognisable PII check line — re-run scripts/validate_auto.py."
+
+    reviewed_ids: set[str] = set()
+    if review_dir.exists():
+        for sheet_path in sorted(review_dir.glob("*.csv")):
+            for row in common.read_csv(sheet_path):
+                if row.get("id") and (row.get("reviewer_verdict") or "").strip():
+                    reviewed_ids.add(row["id"])
+
+    unresolved = [i for i in pii_ids if i not in reviewed_ids]
+    if unresolved:
+        return False, (
+            f"{len(unresolved)} of {len(pii_ids)} possible-PII-flagged row(s) have no recorded "
+            f"reviewer_verdict in {review_dir}: {', '.join(unresolved[:10])}"
+            + (", ..." if len(unresolved) > 10 else "")
+            + ". Have a human reviewer record a verdict (ok/needs_correction/reject) for each, "
+              "even if the verdict is simply 'ok, not actually PII'."
+        )
+    return True, ""
 
 
 def check_no_unresolved_conflicts(conflicts_path: Path) -> tuple[bool, str]:
@@ -113,7 +148,8 @@ def main() -> int:
     base = Path(__file__).resolve().parent.parent
     parser.add_argument("--dataset", type=Path, default=None)
     parser.add_argument("--card", type=Path, default=base / "release" / "DATASET_CARD_TEMPLATE.md")
-    parser.add_argument("--validation", type=Path, default=base / "reports" / "validation.md")
+    parser.add_argument("--flags", type=Path, default=base / "reports" / "flags.csv")
+    parser.add_argument("--review-dir", type=Path, default=base / "reports" / "review")
     parser.add_argument("--conflicts", type=Path, default=base / "reports" / "conflicts.csv")
     parser.add_argument("--release-dir", type=Path, default=base / "release")
     args = parser.parse_args()
@@ -121,7 +157,7 @@ def main() -> int:
     dataset_path = resolve_dataset_path(base, args.dataset)
 
     failures = []
-    ok, msg = check_pii_pass(args.validation)
+    ok, msg = check_pii_resolved(args.flags, args.review_dir)
     if not ok:
         failures.append(msg)
     ok, msg = check_no_unresolved_conflicts(args.conflicts)

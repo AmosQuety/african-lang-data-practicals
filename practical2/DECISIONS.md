@@ -764,3 +764,125 @@ built.)*
   stop and write `BLOCKED.md` rather than scale up on a failed check, and
   the "most conservative option" rule for anything not explicitly
   covered by the brief.
+
+### D029 — Layer 1 Rukiga independent reviewer recruited: anonymised as R01
+
+- **Decision:** Author 1's Layer 1 independent reviewer for Rukiga is a
+  family member (fluent Rukiga speaker, did not collect any of the 63
+  entries in `data/raw/raw_cgg_author1.csv`), assigned the anonymous code
+  `R01`. Their real identity is not recorded anywhere in this repository,
+  per `docs/COLLECTION_PROTOCOL.md` Section 4 and the DATA SAFETY RULES.
+- **Evidence or reasoning:** `docs/TEAM_PLAN.md` required a genuinely
+  independent reviewer (someone who did not collect the entries) for
+  `reviewed_by_independent` to ever be `true` for Rukiga rows. Author 1,
+  despite being a native Rukiga speaker, cannot serve this role for their
+  own collected entries — that would defeat the purpose of an independent
+  check.
+- **Alternatives considered:** Proceeding without a Rukiga Layer 1
+  reviewer, disclosing `reviewed_by_independent=false` for all Rukiga rows
+  as a limitation — this remains the honest fallback if `R01`'s review
+  does not complete before the deadline (see D028 for the same principle
+  applied to the web-scraping shortfall: disclose, don't fake).
+- **Risk:** `R01`'s review is in progress, expected to take about a day;
+  if it does not complete in time, `reviewed_by_independent` stays
+  `false` for the affected rows and this is stated plainly in the dataset
+  card rather than assumed complete.
+- **Confidence:** High on the anonymisation approach (directly required
+  by existing protocol); medium on timing, since it depends on a real
+  person's availability outside this project's control.
+
+### D030 — Fixed a real bug: PII release gate could never pass on real data
+
+- **Decision:** Replaced `build_release.py`'s PII gate. It no longer reads
+  a literal `"PII check: PASS"` / `"FAIL"` line from `validate_auto.py`'s
+  report. It now checks that every row flagged `possible_pii` in
+  `reports/flags.csv` has a recorded `reviewer_verdict` in at least one
+  sheet under `reports/review/` — i.e. a human looked at it, not that the
+  flag no longer exists.
+- **Evidence or reasoning:** `check_pii` in `validate_auto.py` is a blind
+  regex/heuristic scan (email/phone/URL/@handle/long-digit-run/
+  capitalised-token patterns) with no memory of prior human review. Tested
+  directly against this project's own real Rukiga data: legitimate proper
+  nouns (`English`, `Orungyereza`) and a proverb's own
+  `[meaning: Small, ...]` bracketed clause both trip the
+  capitalised-token pattern, and will trip it again every single time
+  `validate_auto.py` is re-run, forever — there is no mechanism by which
+  a human confirming "not actually PII" could ever make the literal
+  report line say PASS. Under the original gate, `build_release.py` could
+  never succeed on this (or arguably any) real dataset containing ordinary
+  proper nouns or multi-clause English translations. This was caught by
+  actually running the gate against real collected data, not by inspecting
+  the code in the abstract.
+- **Alternatives considered:** Hand-editing `reports/validation.md` to say
+  PASS once review is done — rejected; D023 already flags hand-editing
+  report files as something the gate can't detect and authors shouldn't
+  do. Loosening the `capitalised_token` regex so it stops matching common
+  cases — rejected as treating the symptom, not the cause: the checker's
+  job is to flag *candidates* for human judgement, and it did that
+  correctly here; the bug was entirely in how the gate consumed its
+  output, not in the heuristic itself. Requiring zero flags — this is
+  what the original code did, and is the bug being fixed here.
+- **Risk:** A flagged row could be marked with any non-empty
+  `reviewer_verdict` (including a placeholder typo) and count as
+  "resolved" without a reviewer actually reading it carefully — this gate
+  checks that a verdict was *recorded*, not that the review was rigorous.
+  Mitigated by this being a two-person/two-reviewer project where sheet
+  completion is visible and checked by both authors, not a large-scale
+  anonymous review process.
+- **Confidence:** High that the original gate was a genuine bug (verified
+  by running it against real data, not just reasoning about the code) and
+  that this fix correctly implements the brief's actual intent
+  ("validation... and correct any errors found" implies human review
+  resolves flags; it does not imply flags must vanish from a fresh
+  automated scan).
+
+### D031 — No independent Yoruba reviewer recruited before the deadline; disclosed, not faked
+
+- **Decision:** All 15 Yoruba entries were reviewed only by Author 2 (the
+  collector), recorded in `reports/review/layer1_yor_selfreview.csv` —
+  deliberately NOT saved as `layer1_yor.csv`, which stays empty. This
+  matters mechanically: `apply_corrections.py` treats anything recorded
+  in a file literally named `layer1_yor.csv` as independent review,
+  setting `reviewed_by_independent=true` and crediting reviewer code
+  `R02`. Using a different filename means his review still counts toward
+  the automated PII-flag-resolution check (any sheet with a recorded
+  verdict satisfies that), without falsely claiming independent
+  verification that did not happen.
+- **Evidence or reasoning:** Time ran out before an independent fluent
+  Yoruba speaker (someone who did not collect the entries) could be
+  found — unlike Rukiga, where Author 1's family member (R01) reviewed
+  independently. All 15 rows were marked `ok` by Author 2 with no
+  corrections proposed.
+- **Alternatives considered:** Saving his review as `layer1_yor.csv`
+  directly — rejected, would silently mislabel self-review as
+  independent review, which is exactly the kind of dishonest-by-omission
+  outcome this project's design (see D028's `BLOCKED.md`, D027's
+  disclosed-volume-shortfall principle) has consistently rejected
+  elsewhere. Leaving Yoruba entries entirely unreviewed — rejected as
+  strictly worse than a disclosed self-review; some human check is better
+  than none, as long as it's labelled accurately.
+- **Risk:** Self-review by the same person who collected the data cannot
+  catch errors the collector didn't already know to look for — this is
+  the exact limitation Layer 1 independent review exists to address, and
+  it is NOT addressed here for Yoruba. The dataset card's mandatory
+  review-coverage limitation must state this plainly for Yoruba:
+  `reviewed_by_independent=false` for all 15 entries, self-reviewed only.
+- **Confidence:** High that disclosure (not fabricating independence) is
+  the correct call; no claim is made here that the Yoruba data's
+  linguistic correctness has been independently verified, because it has
+  not.
+
+- **Follow-up technical note (D031):** `apply_corrections.py` only reads
+  the four hardcoded sheet names (`layer1_cgg`, `layer1_yor`,
+  `layer2_by_author1`, `layer2_by_author2`), so it never saw
+  `layer1_yor_selfreview.csv` and left all 15 Yoruba rows'
+  `reviewed=False` — technically accurate in the sense that no
+  *counted* review layer touched them, but understates that a real
+  human did look at every row. Patched `data/processed/dataset_corrected.jsonl`
+  directly afterward: `reviewed=True` (someone looked), `reviewer_id`
+  set to the explicit marker `"author2-self"` (never `R02`, which stays
+  reserved for a genuine future independent reviewer),
+  `reviewed_by_independent` left `False`. This mirrors exactly how the
+  schema already distinguishes the two booleans for Layer 2 cross-review
+  (see docs/SCHEMA.md) — self-review is a real form of "reviewed", just
+  never "reviewed by independent".
