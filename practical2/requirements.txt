@@ -1,0 +1,7 @@
+# Practical 2 pipeline dependencies.
+#
+# The pipeline scripts themselves (scripts/*.py) use only the Python
+# standard library — see DECISIONS.md (agreement/kappa computation is
+# stdlib-only per the NETWORK RULES in the task brief). pytest is only
+# needed to run the test suite in tests/.
+pytest>=8.0
