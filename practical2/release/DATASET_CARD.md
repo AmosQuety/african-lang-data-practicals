@@ -2,7 +2,9 @@
 language:
   - cgg
   - yor
-license: cc-by-4.0
+license: other
+license_name: rycdl-v0.1
+license_link: LICENSE
 multilinguality: multilingual
 task_categories:
   - translation
@@ -233,9 +235,20 @@ system without awareness of these limits.
 
 ## License
 
-Creative Commons Attribution 4.0 International (CC BY 4.0) — proposed by
-the authors for their own self-written contributions; see
-`docs/CONSENT_FORM.md` for the license as it would be presented to any
+Rukiga-Yoruba Community Data Licence v0.1 (RYCDL) — a custom licence
+adopted by the authors; full text in `LICENSE`. In short: research,
+education and public-interest use is free for everyone, and commercial use
+is free for African users; commercial use by others needs written
+permission and may carry a fee or in-kind contribution that is reinvested
+in the dataset or in Rukiga and Yoruba language technology. Users must
+credit the curators and the two language communities, keep the licence on
+derived datasets, must not identify contributors, and must not present
+results as representative of either language. The proverbs are traditional
+knowledge of the two communities: the authors license only their own
+selection, spelling and translation of them. The licence has not yet been
+reviewed by a lawyer or by speaker communities, and it is not a Creative
+Commons licence, so some tools and institutions will treat it as "other".
+See `docs/CONSENT_FORM.md` for the licence as it would be presented to any
 future third-party contributor.
 
 ## Citation

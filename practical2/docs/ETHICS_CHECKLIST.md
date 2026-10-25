@@ -47,8 +47,8 @@ actually true.
 ## License and attribution
 
 - [x] License section of the dataset card matches what we've actually
-      agreed with contributors via the consent form (currently CC BY 4.0,
-      proposed).
+      agreed with contributors via the consent form (currently the RYCDL v0.1
+      custom licence, see DECISIONS.md D033).
 - [x] Authors and contributions section reflects who actually did what
       (see `TEAM_PLAN.md`'s CONTRIBUTIONS section).
 

@@ -911,3 +911,38 @@ built.)*
   right. Mitigated only by the dataset card's limitations and by the
   planned review of RYCDL.
 - **Confidence:** High that this is consistent with the live release.
+
+
+### D033 — Adopt the custom RYCDL v0.1 licence (supersedes D032)
+
+- **Decision:** The release is licensed under the Rukiga-Yoruba Community
+  Data Licence v0.1 (`release/LICENSE`). This reverses D032, written the
+  same day, which kept CC BY 4.0. The draft in
+  `docs/RYCDL_v0.1_PROPOSED.txt` was removed because the text now lives in
+  `release/LICENSE`.
+- **Evidence or reasoning:** On re-reading the capstone guide, its
+  "Concepts" slide on Data Ethics and Governance says the capstone
+  application is "Documentation of the data licenses to append to the
+  datasets (preferably custom as opposed to Creative Commons licenses)".
+  D032's compromise (CC BY on the release, custom licence only proposed)
+  fits that preference least. The Week 4 critique also applies: CC BY
+  allows unlimited commercial reuse with nothing returned to the language
+  communities, and 16 of the 78 entries are proverbs, which are communal
+  heritage the authors cannot claim to own.
+- **Alternatives considered:** Keeping CC BY 4.0 (D032) — simpler and
+  already live, but weakest fit with the guide. Waiting for legal review
+  before adopting — rejected, since the licence text states plainly that it
+  is unreviewed, and the dataset is tiny and not yet widely used.
+- **Changed files:** `release/LICENSE`, `release/DATASET_CARD.md`,
+  `release/README.md` (copy of the card, YAML now `license: other`),
+  `scripts/build_release.py` (`LICENSE_TEXT`, so a rebuild does not revert
+  it), `docs/CONSENT_FORM.md`, `docs/ETHICS_CHECKLIST.md`, `README.md`.
+  D025, D032 and `LOG.md` are left as history. The Hugging Face copy must
+  be updated by hand (`docs/UPLOAD_GUIDE.md`); it still says CC BY 4.0.
+- **Risk:** Not a Creative Commons or OSI licence, so Hugging Face shows it
+  as "other" and some institutions will not accept it. "African user"
+  needs a precise legal definition and a way to verify it. No lawyer or
+  speaker-community review yet, and no governing-law clause. A licence
+  cannot replace consent, privacy law or cultural protocols.
+- **Confidence:** High that the repo is consistent; low on legal
+  enforceability until reviewed.

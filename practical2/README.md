@@ -124,7 +124,8 @@ consent, and our own credentials:
 - [ ] Fill in the dataset card with real facts (`release/DATASET_CARD_TEMPLATE.md`
       + `scripts/fill_card_stats.py` output) — never invent numbers
 - [ ] Go through `docs/ETHICS_CHECKLIST.md` together before release
-- [ ] Confirm the license (currently proposed: CC BY 4.0)
+- [x] License: custom RYCDL v0.1 adopted (D033). Still to do: legal and
+      speaker-community review
 - [ ] Run the actual upload by hand (`docs/UPLOAD_GUIDE.md`), with our own
       Hugging Face account/organisation and token
 

@@ -17,12 +17,17 @@ data science course assignment.
 ## What we will do with it
 
 - Your contributed text (and the English translation) will become part of
-  a dataset that we plan to publish **openly**, under a
-  **[Creative Commons Attribution 4.0 (CC BY 4.0) — proposed, to be
-  confirmed by the authors]** license.
+  a dataset that we plan to publish **openly**, under the **Rukiga-Yoruba
+  Community Data Licence (RYCDL) v0.1** (full text in `release/LICENSE`).
 - Once published, anyone will be able to download, use, and share this
-  dataset, including for research or commercial purposes, as long as they
-  credit the dataset per the license.
+  dataset for research, education and public-interest purposes. African
+  individuals and organisations may also use it commercially. Other
+  commercial users need our written permission and may have to pay a fee
+  or contribute in kind; fees are reinvested in the dataset or in Rukiga
+  and Yoruba language technology. Everyone must credit the dataset and the
+  language communities.
+- The licence has not yet been reviewed by a lawyer or by speaker
+  communities.
 - Your text may be used to help build or evaluate language tools (for
   example, translation or text-processing tools) for [Rukiga / Yoruba].
 
