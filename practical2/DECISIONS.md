@@ -886,3 +886,28 @@ built.)*
   schema already distinguishes the two booleans for Layer 2 cross-review
   (see docs/SCHEMA.md) — self-review is a real form of "reviewed", just
   never "reviewed by independent".
+
+
+### D032 — Keep CC BY 4.0 for this release; custom licence (RYCDL v0.1) proposed for later
+
+- **Decision:** The release stays under CC BY 4.0, matching what is already
+  published on Hugging Face. A custom community licence, RYCDL v0.1, is
+  drafted in `docs/RYCDL_v0.1_PROPOSED.txt` as a proposed next step. It is
+  not in force and no release file refers to it.
+- **Evidence or reasoning:** The capstone guide prefers a custom licence
+  but does not require one. CC BY 4.0 is standard, recognised by tools, and
+  already live, so keeping it avoids a re-upload and an unreviewed legal
+  text. The Week 4 critique still applies: CC BY allows unlimited
+  commercial reuse with nothing returned to the language communities, and
+  16 of the 78 entries are proverbs, which are communal heritage the
+  authors cannot claim to own. The paper records this and presents RYCDL
+  as the answer once reviewed.
+- **Alternatives considered:** Adopting RYCDL now (changed the licence
+  files, consent form and build script, then reverted before commit) —
+  rejected for now because it has no legal or community review, "African
+  user" needs a precise definition, and it would show as "other" on
+  Hugging Face.
+- **Risk:** CC BY gives the communities no benefit-sharing or withdrawal
+  right. Mitigated only by the dataset card's limitations and by the
+  planned review of RYCDL.
+- **Confidence:** High that this is consistent with the live release.
