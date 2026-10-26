@@ -155,13 +155,13 @@ specified in the assignment brief — see D019.
 
 ## Why this license?
 
-CC BY 4.0, and explicitly marked "proposed, to be confirmed by the
-authors" everywhere it appears (`docs/CONSENT_FORM.md`,
-`release/DATASET_CARD_TEMPLATE.md`, `release/LICENSE`'s generated notice)
-— because the task brief itself only proposes this license pending
-confirmation, and this pipeline never finalises a legal decision on the
-authors' behalf (see the GOAL section of the brief and D025 for why the
-LICENSE file links to the canonical CC text rather than vendoring it).
+The release is under the custom Rukiga-Yoruba Community Data Licence v0.1
+(RYCDL), adopted by the authors in October 2026 (D033). CC BY 4.0 was first
+proposed (D025) and briefly kept (D032), then replaced because the capstone
+guide prefers a custom licence over Creative Commons, CC BY returns nothing
+to the language communities, and the 16 proverbs are communal heritage the
+authors cannot claim to own. RYCDL has not been reviewed by a lawyer or by
+speaker communities, and it shows as "other" on Hugging Face.
 
 ## How was work split?
 

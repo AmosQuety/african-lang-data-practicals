@@ -1,4 +1,4 @@
-> **DRAFT — template for the two authors to fill in and adapt.**
+> Filled in from the project record (DECISIONS.md, the dataset card). Dates were not tracked during collection and are marked as such.
 
 # Team plan
 
@@ -20,8 +20,8 @@ limitation, not an error, but only if we're honest about it.
 
 To avoid both authors accidentally reusing the same `C0xx` code:
 
-- Author 1 (Rukiga): `C001`–`C0[FILL IN — e.g. 099]`
-- Author 2 (Yoruba): `C1[FILL IN — e.g. 00]`–`C1[FILL IN]`
+- Author 1 (Rukiga): `C001` (the only Rukiga code used)
+- Author 2 (Yoruba): `C101` (the only Yoruba code used)
 
 (Any non-overlapping ranges work — the point is just that the two authors
 agree on ranges before collecting, so codes never collide when raw CSVs
@@ -38,16 +38,11 @@ are combined by `preprocess.py`.)
 
 ## Timeline
 
-| Milestone | Target date | Owner |
-|---|---|---|
-| Collection complete (both languages, 150–250 entries each) | [FILL IN] | Both |
-| Preprocessing + auto-validation run | [FILL IN] | [FILL IN] |
-| Layer 1 independent review complete | [FILL IN] | Layer 1 reviewers |
-| Layer 2 cross-review + overlap complete | [FILL IN] | Both authors |
-| Agreement computed, disagreements discussed | [FILL IN] | Both |
-| Corrections applied, conflicts resolved | [FILL IN] | Both |
-| Dataset card filled in, release built | [FILL IN] | [FILL IN] |
-| Upload (by hand, by an author, with their own credentials) | [FILL IN] | [FILL IN] |
+Dates were not tracked in this repo. The record shows: collection in
+September 2026 (`date_collected` 2026-09), both reviews and corrections
+before release, and the licence change and re-upload in October 2026 (D033).
+Not completed: Layer 2 cross-review and agreement (3 of 28 and 0 of 66 rows
+filled) and any independent Yoruba review.
 
 ## Who does what (working split)
 
@@ -55,12 +50,9 @@ are combined by `preprocess.py`.)
   own language.
 - **Recruiting the Layer 1 independent reviewer:** each author, for their
   own language (must be someone who did not collect the entries).
-- **Running the pipeline scripts:** [FILL IN — can be either/both; the
-  scripts are the same regardless of who runs them].
-- **Filling the dataset card with real numbers:** [FILL IN].
-- **Final upload to Hugging Face:** [FILL IN — see docs/UPLOAD_GUIDE.md for
-  under whose account / an organisation, and how to add the other author
-  as a collaborator].
+- **Running the pipeline scripts:** Nabasa Amos (pipeline development and maintenance, per the dataset card).
+- **Filling the dataset card with real numbers:** Nabasa Amos.
+- **Final upload to Hugging Face:** by hand, by Nabasa Amos, to the `rukiga-yoruba-datacuration` organisation (see docs/UPLOAD_GUIDE.md).
 
 ---
 
@@ -70,9 +62,7 @@ are combined by `preprocess.py`.)
 > "Authors and contributions" section of the dataset card and can be
 > reused in the course report.
 
-- **Nabasa Amos:** [FILL IN — e.g. Rukiga data collection (N entries),
-  pipeline development, Layer 2 cross-review of Yoruba entries, ...]
-- **Jesulewami Kupoluyi:** [FILL IN — e.g. Yoruba data collection (N
-  entries), Layer 2 cross-review of Rukiga entries, ...]
+- **Nabasa Amos:** Rukiga data collection (63 entries), pipeline development and maintenance, fix of the release PII gate (D030). Layer 2 cross-review of Yoruba was not completed.
+- **Jesulewami Kupoluyi:** Yoruba data collection (17 raw, 15 final entries) and self-review of them (not independent). Layer 2 cross-review of Rukiga was not completed.
 - **Layer 1 Rukiga reviewer (R01):** Family member of Author 1, fluent Rukiga speaker — independent review of all 57 flagged/sampled Rukiga entries (real identity not disclosed in this repo).
-- **Layer 1 Yoruba reviewer:** [FILL IN name/role or "to be confirmed"]
+- **Layer 1 Yoruba reviewer:** none recruited before the deadline (see the roles table).
