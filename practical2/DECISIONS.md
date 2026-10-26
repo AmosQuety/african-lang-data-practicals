@@ -946,3 +946,32 @@ built.)*
   cannot replace consent, privacy law or cultural protocols.
 - **Confidence:** High that the repo is consistent; low on legal
   enforceability until reviewed.
+
+
+### D034 — Fixes after the independent capstone review
+
+- **Decision:** Applied the non-controversial fixes from the reviewer report:
+  added a `configs:` block to the dataset card YAML (`default`, `cgg`,
+  `yor`) because the live Hugging Face default view loaded
+  `dataset.jsonl`, `cgg/` and `yor/` together and showed every entry twice
+  (the upload guide's step 6 asked for this and it was missed); replaced
+  the stale citation (no community credit, no version, "URL to be added");
+  added a card note that the diacritic check is faulty; removed stale
+  licence text from `VIVA_NOTES.md`; filled the `TEAM_PLAN.md`
+  placeholders from the record only (no invented dates).
+- **Known fault, not yet fixed:** `check_diacritic_consistency` in
+  `scripts/validate_auto.py` only recognises combining and a few
+  decomposed code points, so after NFC it misses precomposed accented
+  vowels. It reports 14 of 15 Yoruba entries with marks (all 15 have them)
+  and raises `diacritic_mixed_style` whenever an entry has both tone marks
+  and underdots, which is normal Yoruba spelling. `reports/validation.md`
+  and the 53-flag total therefore still contain these artefacts. To be
+  fixed in a separate change.
+- **Update to D033:** the Hugging Face copy was re-uploaded on 2026-10-25
+  and now shows `license: other`; the "still says CC BY 4.0" line in D033
+  is history.
+- **Open, awaiting the authors:** whether to state in the card that the
+  capstone reuses the Practical II data; licence tightening (explicit
+  share right, definitions, clause 5.2 versus 2.1, governance clauses).
+- **Confidence:** High on the configs and citation fixes; the configs fix
+  must be confirmed on the live viewer after re-upload.
