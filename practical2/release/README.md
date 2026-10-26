@@ -12,6 +12,19 @@ task_categories:
 pretty_name: "Rukiga-Yoruba Short Text and Proverbs Dataset"
 size_categories:
   - n<1K
+configs:
+  - config_name: default
+    data_files:
+      - split: train
+        path: dataset.jsonl
+  - config_name: cgg
+    data_files:
+      - split: train
+        path: cgg/dataset_cgg.jsonl
+  - config_name: yor
+    data_files:
+      - split: train
+        path: yor/dataset_yor.jsonl
 ---
 
 # Dataset Card for Rukiga-Yoruba Short Text and Proverbs Dataset
@@ -145,7 +158,12 @@ fluent in both languages.
 bracketed `[meaning: ...]` explanation appended to short proverb text —
 expected, not an error), and 1 `language_looks_like_other_language`
 (a Yoruba proverb with few diacritics, a small-sample statistical
-artefact). All 20 `possible_pii` flags were individually reviewed by a
+artefact). Correction (see `DECISIONS.md` D034): the diacritic check misses
+accented vowels stored as single characters, so it reports 14 of 15 Yoruba
+entries with tone or underdot marks when all 15 have them (174 combining
+marks after NFD decomposition). The 11 `diacritic_mixed_style` flags, and
+possibly the language-label flag, come from that faulty check and should be
+read as artefacts, not findings. All 20 `possible_pii` flags were individually reviewed by a
 human (the independent Rukiga reviewer, and the Yoruba collector via
 self-review) and confirmed to be false positives — sentence-initial
 capitalisation, real proper nouns/place names ("English", "Lagos"), or the
@@ -255,9 +273,11 @@ future third-party contributor.
 
 ```
 Nabasa Amos and Jesulewami Kupoluyi (2026). Rukiga-Yoruba Short Text and
-Proverbs Dataset. Practical II: End-to-End Data Curation (course
-assignment). Unpublished/coursework dataset; final repository URL to be
-added after upload.
+Proverbs Dataset, October 2026 release, licence RYCDL v0.1. Hugging Face.
+https://huggingface.co/datasets/rukiga-yoruba-datacuration/rukiga-yoruba-short-text-proverbs
+Created for Tonative Data Academy (Practical II and Capstone). Credit also
+the Rukiga and Yoruba speech communities as the source of the language and
+proverbs (licence clause 4.1).
 ```
 
 ## Authors and contributions
