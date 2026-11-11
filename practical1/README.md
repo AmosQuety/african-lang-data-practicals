@@ -4,6 +4,11 @@ Data-preparation pipeline (sourcing → profiling → preprocessing → validati
 the Luganda subset of MasakhaNER 1.0. See `REPORT.md` for the full write-up and `DECISIONS.md`
 for the reasoning behind every choice made.
 
+> **Data notice:** the data here is a modified copy of MasakhaNER 1.0 (Luganda), licensed by
+> its creators under CC BY-NC 4.0 (non-commercial, attribution required). It was prepared as
+> part of a course experiment and should not be used for modeling. Source, terms of use and
+> citation are in the [root README](../README.md) and `DATASET_INFO.md`.
+
 ## Folder layout
 
 ```
